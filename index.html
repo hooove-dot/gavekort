@@ -1,122 +1,114 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Familiebilleder</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billedbog</title>
   <style>
     html, body {
       height: 100%;
       margin: 0;
       padding: 0;
-      background: #f5ede1;
-      width: 100vw;
       overflow: hidden;
+      background: #000;
+      touch-action: manipulation;
     }
     body {
       width: 100vw;
       height: 100vh;
-      touch-action: manipulation;
-      user-select: none;
+      position: relative;
+      font-family: system-ui, sans-serif;
     }
-    #forside, .slide {
+    .slide, .forside {
       position: absolute;
-      inset: 0;
+      left: 0; top: 0;
       width: 100vw;
       height: 100vh;
+      object-fit: cover;
+      transition: opacity 0.7s;
+      opacity: 0;
+      z-index: 1;
+      background: #000;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #f5ede1;
-      z-index: 2;
-      transition: opacity 0.7s ease;
+    }
+    .slide.visible, .forside.visible {
       opacity: 1;
+      z-index: 2;
     }
-    #forside.hide, .slide.hide {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.7s ease;
-    }
-    #forside-content {
-      text-align: center;
-    }
-    #forside-billede {
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      display: block;
-      pointer-events: none;
-      user-select: none;
-    }
-    #trykstart {
-      position: absolute;
-      bottom: 7vh;
-      left: 0;
-      right: 0;
-      text-align: center;
-      font-size: 2.8vw;
-      font-family: "Arial Rounded MT Bold", Arial, sans-serif;
-      color: #333;
-      letter-spacing: 0.03em;
-      opacity: 0.85;
-      background: rgba(245,237,225,0.82);
-      border-radius: 1.5vw;
-      width: 100vw;
-      margin: 0 auto;
-      pointer-events: none;
-    }
-    .slide img {
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      display: block;
-      user-select: none;
-      pointer-events: none;
-    }
-    #prev, #next {
+    .nav-btn {
       position: absolute;
       top: 50%;
-      z-index: 10;
-      background: rgba(245,237,225,0.67);
-      border: none;
-      font-size: 7vw;
-      color: #5c564a;
-      border-radius: 3vw;
-      width: 12vw;
-      height: 12vw;
-      min-width: 44px;
-      min-height: 44px;
-      cursor: pointer;
       transform: translateY(-50%);
-      transition: background 0.2s;
-      opacity: 0.7;
-      outline: none;
+      width: 48px; height: 48px;
+      background: rgba(255,255,255,0.3);
+      border: none;
+      border-radius: 24px;
+      font-size: 2.5rem;
+      color: #333;
+      z-index: 10;
+      cursor: pointer;
       user-select: none;
+      outline: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
     }
-    #prev:hover, #next:hover { background: rgba(245,237,225,0.92); opacity: 1;}
-    #prev { left: 1vw; }
-    #next { right: 1vw; }
-    @media (max-width: 700px) {
-      #trykstart { font-size: 4vw; }
-      #prev, #next { font-size: 10vw; width: 16vw; height: 16vw; }
+    .nav-btn:active { background: rgba(255,255,255,0.5); }
+    .prev { left: 16px; }
+    .next { right: 16px; }
+    .forside-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      font-size: 2rem;
+      z-index: 10;
+    }
+    .trykstart {
+      font-size: 1.2rem;
+      color: #fff9;
+      margin-top: 1.5rem;
+      background: rgba(0,0,0,0.4);
+      padding: 0.7em 1.5em;
+      border-radius: 18px;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+    @media (max-width:600px) {
+      .nav-btn {
+        width: 38px; height: 38px; font-size: 2rem;
+      }
+      .forside-content { font-size: 1.2rem; }
+      .trykstart { font-size: 0.92rem; }
     }
   </style>
 </head>
 <body>
   <!-- Forside -->
-  <div id="forside">
-    <img id="forside-billede" src="Design uden navn.png" alt="forside" />
-    <div id="trykstart">tryk for at starte</div>
+  <div class="forside visible" id="forside">
+    <div class="forside-content">
+      <img src="Design uden navn.png" alt="forside" style="width: 90vw; max-width:420px; border-radius: 1.2em; box-shadow:0 4px 32px #0005;">
+      <div class="trykstart">tryk for at starte</div>
+    </div>
   </div>
 
-  <!-- Slideshow container -->
-  <div id="slideshow"></div>
-  <button id="prev" style="display:none;">&#8249;</button>
-  <button id="next" style="display:none;">&#8250;</button>
+  <!-- Slides -->
+  <!-- De faktiske billeder indsættes via JS -->
+
+  <button class="nav-btn prev" id="prevBtn" style="display:none">&#x2039;</button>
+  <button class="nav-btn next" id="nextBtn" style="display:none">&#x203A;</button>
 
   <script>
-    // *** INDSÆT DINE FILNAVNE HER I KORREKT RÆKKEFØLGE ***
-    const billeder = [
+    // Indsæt dine billedfilnavne i rækkefølge her:
+    const imageFiles = [
+      // "Design uden navn.png", // <-- Forside (allerede vist særskilt)
       "Billede 1.jpg",
       "Billede 2.jpg",
       "Billede 3.jpg",
@@ -126,110 +118,113 @@
       "Billede 23.jpg",
       "Billede 24.jpg",
       "Billede 25.jpg",
-      "Design uden navn.png",
-      "E8A74AAA-BC3E-4E53-BD97-0C2FDAFE7BF9.png",
+      "f75d86de-b362-47a5-9e52-4ccb60d964ce.jpeg",
+      "fbb2e01b-6bf4-4859-9f85-418412b4abd0.jpg",
       "F00B416B-3D7C-4E73-B92D-5E91168524C8.jpeg",
       "815FF0E0-1E99-4ADB-A9B8-CAEA128FE786.jpeg",
-      "fbb2e01b-6bf4-4859-9f85-418412b4abd0.jpg",
-      "f75d86de-b362-47a5-9e52-4ccb60d964ce.jpeg",
-      // Tilføj flere hvis du ønsker
+      "E8A74AAA-BC3E-4E53-BD97-0C2FDAFE7BF9.png",
+      // Tilføj evt. flere...
     ];
 
+    // ---- Slides oprettelse ----
+    let slides = [];
+    imageFiles.forEach((file, idx) => {
+      const img = document.createElement("img");
+      img.src = file;
+      img.className = "slide";
+      img.alt = "slide" + (idx+1);
+      img.style.opacity = "0";
+      img.style.zIndex = 1;
+      document.body.appendChild(img);
+      slides.push(img);
+    });
+
+    // ---- Vis/skjul pile ----
+    function updateNavButtons() {
+      prevBtn.style.display = (current > 0) ? "flex" : "none";
+      nextBtn.style.display = (current < slides.length-1) ? "flex" : "none";
+    }
+
+    // ---- Skift slide med fade ----
     let current = 0;
-    let started = false;
-    let timer = null;
-    const fadeDuration = 700; // ms
-
-    const slideshow = document.getElementById('slideshow');
-    const prevBtn = document.getElementById('prev');
-    const nextBtn = document.getElementById('next');
-    const forside = document.getElementById('forside');
-
-    function showSlide(n, withFade=true) {
-      slideshow.innerHTML = '';
-      let slide = document.createElement('div');
-      slide.className = 'slide';
-      if (withFade) slide.style.opacity = 0;
-      let img = document.createElement('img');
-      img.src = billeder[n];
-      img.alt = '';
-      slide.appendChild(img);
-      slideshow.appendChild(slide);
-      prevBtn.style.display = nextBtn.style.display = 'block';
-
-      // Fade-in effect
-      setTimeout(() => slide.style.opacity = 1, 50);
+    function showSlide(idx) {
+      slides.forEach((img, i) => {
+        img.classList.remove("visible");
+        img.style.zIndex = 1;
+      });
+      if (slides[idx]) {
+        slides[idx].classList.add("visible");
+        slides[idx].style.zIndex = 2;
+      }
+      updateNavButtons();
     }
 
-    function nextSlide() {
-      clearTimeout(timer);
-      current = (current + 1) % billeder.length;
-      showSlide(current);
-      startAuto();
+    // ---- Forside styring ----
+    const forside = document.getElementById("forside");
+    function startBogen() {
+      forside.classList.remove("visible");
+      setTimeout(() => {
+        forside.style.display = "none";
+        slides[0].classList.add("visible");
+        slides[0].style.zIndex = 2;
+        updateNavButtons();
+      }, 500);
     }
-    function prevSlide() {
-      clearTimeout(timer);
-      current = (current - 1 + billeder.length) % billeder.length;
-      showSlide(current);
-      startAuto();
-    }
-    function startAuto() {
-      clearTimeout(timer);
-      timer = setTimeout(nextSlide, 3600); // 3.6 sek pr. slide
-    }
+    forside.addEventListener("click", startBogen);
 
-    // START - tryk for at starte slideshow
-    forside.addEventListener('click', () => {
-      if (started) return;
-      started = true;
-      forside.classList.add('hide');
-      setTimeout(() => { forside.style.display = 'none'; }, fadeDuration);
-      showSlide(current);
-      startAuto();
-      goFullScreen();
-      requestWakeLock();
+    // ---- Navigation knapper ----
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    prevBtn.addEventListener("click", () => {
+      if (current > 0) {
+        slides[current].classList.remove("visible");
+        current--;
+        slides[current].classList.add("visible");
+        updateNavButtons();
+      }
+    });
+    nextBtn.addEventListener("click", () => {
+      if (current < slides.length-1) {
+        slides[current].classList.remove("visible");
+        current++;
+        slides[current].classList.add("visible");
+        updateNavButtons();
+      }
     });
 
-    nextBtn.addEventListener('click', nextSlide);
-    prevBtn.addEventListener('click', prevSlide);
-
-    // Swipe på mobil
+    // ---- Swipe support (touch) ----
     let touchStartX = 0;
-    slideshow.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX);
-    slideshow.addEventListener('touchend', e => {
-      if (!started) return;
-      let dx = e.changedTouches[0].clientX - touchStartX;
-      if (Math.abs(dx) > 60) {
-        if (dx < 0) nextSlide();
-        else prevSlide();
-      }
+    document.body.addEventListener('touchstart', e => {
+      if (!forside.classList.contains('visible')) touchStartX = e.touches[0].clientX;
     });
-    // Undgå at billedet trækkes på touch
-    slideshow.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+    document.body.addEventListener('touchend', e => {
+      if (forside.classList.contains('visible')) return;
+      let deltaX = e.changedTouches[0].clientX - touchStartX;
+      if (deltaX > 55 && current > 0) prevBtn.click();
+      if (deltaX < -55 && current < slides.length-1) nextBtn.click();
+    });
 
-    // Fuld skærm på mobil (når slideshow starter)
-    function goFullScreen() {
-      let el = document.documentElement;
-      if (el.requestFullscreen) el.requestFullscreen();
-      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-      else if (el.msRequestFullscreen) el.msRequestFullscreen();
+    // ---- Tastatur navigation (valgfrit på computer) ----
+    document.addEventListener("keydown", e => {
+      if (forside.classList.contains('visible')) return;
+      if (e.key === "ArrowLeft") prevBtn.click();
+      if (e.key === "ArrowRight") nextBtn.click();
+    });
+
+    // ---- Prøv at holde skærmen tændt (moderne mobiler) ----
+    if ('wakeLock' in navigator) {
+      let wakeLock = null;
+      const requestWakeLock = async () => {
+        try { wakeLock = await navigator.wakeLock.request('screen'); } catch (err) {}
+      };
+      requestWakeLock();
+      document.addEventListener('visibilitychange', () => {
+        if (wakeLock !== null && document.visibilityState === 'visible') requestWakeLock();
+      });
     }
 
-    // WAKE LOCK (forhindrer at skærmen slukker)
-    let wakeLock = null;
-    async function requestWakeLock() {
-      try {
-        if ('wakeLock' in navigator) {
-          wakeLock = await navigator.wakeLock.request('screen');
-        }
-      } catch (err) {
-        // Ikke understøttet på alle enheder, ignorer fejl
-      }
-    }
-
-    // Forhindrer scrolling på mobil
-    document.body.addEventListener('touchmove', function(e) { e.preventDefault(); }, { passive: false });
-
+    // ---- Zoom disable for mobil (optionel) ----
+    document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
   </script>
 </body>
 </html>
