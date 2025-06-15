@@ -3,134 +3,233 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>∞ gavekort</title>
+  <title>Familiebilleder</title>
   <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #f5ede1;
+      width: 100vw;
+      overflow: hidden;
+    }
     body {
-      margin: 0;
-      font-family: sans-serif;
-      background: #fefaf5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-    }
-
-    #intro {
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    #intro img {
-      max-width: 80vw;
-      height: auto;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    }
-
-    #intro p {
-      font-size: 1.2rem;
-      color: #555;
-      margin: 0;
-    }
-
-    .image-container {
-      display: none;
       width: 100vw;
       height: 100vh;
-      position: relative;
-      overflow: hidden;
-      background: #fefaf5;
-    }
-
-    .image-container img {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      max-width: 100%;
-      max-height: 100%;
-      transform: translate(-50%, -50%) scale(1);
-      opacity: 0;
-      transition: all 1s ease;
-    }
-
-    .image-container img.active {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1.05);
-      z-index: 1;
-    }
-
-    .nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 3rem;
-      color: rgba(0,0,0,0.4);
-      cursor: pointer;
+      touch-action: manipulation;
       user-select: none;
-      z-index: 2;
     }
-
-    .nav.left { left: 10px; }
-    .nav.right { right: 10px; }
+    #forside, .slide {
+      position: absolute;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5ede1;
+      z-index: 2;
+      transition: opacity 0.7s ease;
+      opacity: 1;
+    }
+    #forside.hide, .slide.hide {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.7s ease;
+    }
+    #forside-content {
+      text-align: center;
+    }
+    #forside-billede {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+    }
+    #trykstart {
+      position: absolute;
+      bottom: 7vh;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 2.8vw;
+      font-family: "Arial Rounded MT Bold", Arial, sans-serif;
+      color: #333;
+      letter-spacing: 0.03em;
+      opacity: 0.85;
+      background: rgba(245,237,225,0.82);
+      border-radius: 1.5vw;
+      width: 100vw;
+      margin: 0 auto;
+      pointer-events: none;
+    }
+    .slide img {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      display: block;
+      user-select: none;
+      pointer-events: none;
+    }
+    #prev, #next {
+      position: absolute;
+      top: 50%;
+      z-index: 10;
+      background: rgba(245,237,225,0.67);
+      border: none;
+      font-size: 7vw;
+      color: #5c564a;
+      border-radius: 3vw;
+      width: 12vw;
+      height: 12vw;
+      min-width: 44px;
+      min-height: 44px;
+      cursor: pointer;
+      transform: translateY(-50%);
+      transition: background 0.2s;
+      opacity: 0.7;
+      outline: none;
+      user-select: none;
+    }
+    #prev:hover, #next:hover { background: rgba(245,237,225,0.92); opacity: 1;}
+    #prev { left: 1vw; }
+    #next { right: 1vw; }
+    @media (max-width: 700px) {
+      #trykstart { font-size: 4vw; }
+      #prev, #next { font-size: 10vw; width: 16vw; height: 16vw; }
+    }
   </style>
 </head>
 <body>
-  <div id="intro">
-    <img src="forside.png" alt="gavekort forside">
-    <p>tryk for at starte</p>
+  <!-- Forside -->
+  <div id="forside">
+    <img id="forside-billede" src="Design uden navn.png" alt="forside" />
+    <div id="trykstart">tryk for at starte</div>
   </div>
 
-  <div class="image-container" id="slideshow">
-    <div class="nav left" onclick="prev()">‹</div>
-    <div class="nav right" onclick="next()">›</div>
-    <img src="Billede 1.jpg" />
-    <img src="Billede 2.jpg" />
-    <img src="Billede 3.jpg" />
-    <img src="Billede 4.jpg" />
-    <img src="Billede 12.jpg" />
-    <img src="Billede 20.jpg" />
-    <img src="Billede 24.jpg" />
-    <img src="Design uden navn.png" />
-    <img src="815FF0E0-1E99-4ADB-A9B8-CAEA128FE786.jpeg" />
-    <img src="f75d86de-b362-47a5-9e52-4ccb60d964ce.jpeg" />
-    <img src="fbb2e01b-6bf4-4859-9f85-418412b4abd0.jpg" />
-    <img src="F00B416B-3D7C-4E73-B92D-5E91168524C8.jpeg" />
-    <img src="E8A74AAA-BC3E-4E53-BD97-0C2FDAFE7BF9.png" />
-    <img src="Billede 23.jpg" />
-  </div>
+  <!-- Slideshow container -->
+  <div id="slideshow"></div>
+  <button id="prev" style="display:none;">&#8249;</button>
+  <button id="next" style="display:none;">&#8250;</button>
 
   <script>
-    const intro = document.getElementById("intro");
-    const slideshow = document.getElementById("slideshow");
-    const images = slideshow.querySelectorAll("img");
-    let index = 0;
-    let interval;
+    // *** INDSÆT DINE FILNAVNE HER I KORREKT RÆKKEFØLGE ***
+    const billeder = [
+      "Billede 1.jpg",
+      "Billede 2.jpg",
+      "Billede 3.jpg",
+      "Billede 4.jpg",
+      "Billede 12.jpg",
+      "Billede 20.jpg",
+      "Billede 23.jpg",
+      "Billede 24.jpg",
+      "Billede 25.jpg",
+      "Design uden navn.png",
+      "E8A74AAA-BC3E-4E53-BD97-0C2FDAFE7BF9.png",
+      "F00B416B-3D7C-4E73-B92D-5E91168524C8.jpeg",
+      "815FF0E0-1E99-4ADB-A9B8-CAEA128FE786.jpeg",
+      "fbb2e01b-6bf4-4859-9f85-418412b4abd0.jpg",
+      "f75d86de-b362-47a5-9e52-4ccb60d964ce.jpeg",
+      // Tilføj flere hvis du ønsker
+    ];
 
-    intro.addEventListener("click", () => {
-      intro.style.display = "none";
-      slideshow.style.display = "block";
-      images[0].classList.add("active");
+    let current = 0;
+    let started = false;
+    let timer = null;
+    const fadeDuration = 700; // ms
 
-      interval = setInterval(next, 3000);
+    const slideshow = document.getElementById('slideshow');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    const forside = document.getElementById('forside');
+
+    function showSlide(n, withFade=true) {
+      slideshow.innerHTML = '';
+      let slide = document.createElement('div');
+      slide.className = 'slide';
+      if (withFade) slide.style.opacity = 0;
+      let img = document.createElement('img');
+      img.src = billeder[n];
+      img.alt = '';
+      slide.appendChild(img);
+      slideshow.appendChild(slide);
+      prevBtn.style.display = nextBtn.style.display = 'block';
+
+      // Fade-in effect
+      setTimeout(() => slide.style.opacity = 1, 50);
+    }
+
+    function nextSlide() {
+      clearTimeout(timer);
+      current = (current + 1) % billeder.length;
+      showSlide(current);
+      startAuto();
+    }
+    function prevSlide() {
+      clearTimeout(timer);
+      current = (current - 1 + billeder.length) % billeder.length;
+      showSlide(current);
+      startAuto();
+    }
+    function startAuto() {
+      clearTimeout(timer);
+      timer = setTimeout(nextSlide, 3600); // 3.6 sek pr. slide
+    }
+
+    // START - tryk for at starte slideshow
+    forside.addEventListener('click', () => {
+      if (started) return;
+      started = true;
+      forside.classList.add('hide');
+      setTimeout(() => { forside.style.display = 'none'; }, fadeDuration);
+      showSlide(current);
+      startAuto();
+      goFullScreen();
+      requestWakeLock();
     });
 
-    function showImage(newIndex) {
-      images[index].classList.remove("active");
-      index = (newIndex + images.length) % images.length;
-      images[index].classList.add("active");
+    nextBtn.addEventListener('click', nextSlide);
+    prevBtn.addEventListener('click', prevSlide);
+
+    // Swipe på mobil
+    let touchStartX = 0;
+    slideshow.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX);
+    slideshow.addEventListener('touchend', e => {
+      if (!started) return;
+      let dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 60) {
+        if (dx < 0) nextSlide();
+        else prevSlide();
+      }
+    });
+    // Undgå at billedet trækkes på touch
+    slideshow.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+
+    // Fuld skærm på mobil (når slideshow starter)
+    function goFullScreen() {
+      let el = document.documentElement;
+      if (el.requestFullscreen) el.requestFullscreen();
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else if (el.msRequestFullscreen) el.msRequestFullscreen();
     }
 
-    function next() {
-      showImage(index + 1);
+    // WAKE LOCK (forhindrer at skærmen slukker)
+    let wakeLock = null;
+    async function requestWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLock = await navigator.wakeLock.request('screen');
+        }
+      } catch (err) {
+        // Ikke understøttet på alle enheder, ignorer fejl
+      }
     }
 
-    function prev() {
-      showImage(index - 1);
-    }
+    // Forhindrer scrolling på mobil
+    document.body.addEventListener('touchmove', function(e) { e.preventDefault(); }, { passive: false });
+
   </script>
 </body>
 </html>
