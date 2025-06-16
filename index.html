@@ -32,45 +32,50 @@
       background: #000;
       z-index: 1;
     }
-    .fade {
-      opacity: 0;
-      transition: opacity 0.7s;
-    }
-    .show {
-      opacity: 1;
-      transition: opacity 0.7s;
-    }
     #slideshow-img {
-      max-width: 100vw;
-      max-height: 100dvh;
       width: 100vw;
       height: 100dvh;
       object-fit: cover;
+      object-position: center center;
       display: block;
-      background: #000;
       user-select: none;
       -webkit-user-drag: none;
+      pointer-events: none;
+      background: #000;
+      opacity: 1;
+      transition: opacity 1s;
+      will-change: opacity;
+      position: absolute;
+      top: 0; left: 0;
+    }
+    .fade {
+      opacity: 0;
+      transition: opacity 1.3s;
+    }
+    .show {
+      opacity: 1;
+      transition: opacity 1.3s;
     }
     #start-btn {
       position: absolute;
-      bottom: 30px;
+      bottom: 36px;
       left: 0; right: 0;
       margin: 0 auto;
-      font-size: 1.2em;
+      font-size: 1.13em;
       color: #fff;
-      background: rgba(0,0,0,0.35);
-      padding: 9px 22px;
-      border-radius: 18px;
+      background: rgba(0,0,0,0.27);
+      padding: 8px 20px;
+      border-radius: 20px;
       border: none;
       font-family: inherit;
-      letter-spacing: 0.03em;
-      opacity: 0.9;
+      letter-spacing: 0.04em;
+      opacity: 0.95;
       cursor: pointer;
-      box-shadow: 0 2px 7px rgba(0,0,0,0.2);
       outline: none;
       transition: background 0.2s, opacity 0.2s;
       z-index: 2;
       pointer-events: auto;
+      box-shadow: 0 2px 7px rgba(0,0,0,0.17);
     }
     #start-btn:active {
       opacity: 1;
@@ -79,32 +84,32 @@
     .arrow {
       position: absolute;
       top: 50%;
-      width: 48px;
-      height: 48px;
-      margin-top: -24px;
+      width: 42px;
+      height: 42px;
+      margin-top: -21px;
       background: rgba(40,40,40,0.3);
       color: #fff;
       border-radius: 50%;
       border: none;
-      font-size: 2.3em;
+      font-size: 2em;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 2;
-      opacity: 0.68;
+      opacity: 0.62;
       cursor: pointer;
       transition: background 0.2s, opacity 0.2s;
       user-select: none;
     }
     .arrow:active {
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.5);
       opacity: 1;
     }
-    #left-arrow { left: 12px; }
-    #right-arrow { right: 12px; }
+    #left-arrow { left: 11px; }
+    #right-arrow { right: 11px; }
     @media (max-width: 700px) {
-      #start-btn { font-size: 1.1em; padding: 7px 14px; }
-      .arrow { width: 37px; height: 37px; font-size: 1.5em; margin-top: -18px; }
+      #start-btn { font-size: 1em; padding: 7px 11px; }
+      .arrow { width: 32px; height: 32px; font-size: 1.3em; margin-top: -16px; }
     }
   </style>
 </head>
@@ -148,7 +153,6 @@
       if (animating) return;
       animating = true;
 
-      // Fade ud
       img.classList.remove('show');
       img.classList.add('fade');
 
@@ -159,9 +163,9 @@
             img.classList.remove('fade');
             img.classList.add('show');
             animating = false;
-          }, 10);
+          }, 12);
         };
-      }, withFade ? 300 : 0);
+      }, withFade ? 390 : 0);
     }
 
     function updateArrows() {
@@ -186,7 +190,6 @@
     }
 
     function startSlideshow() {
-      // Gå til billede nr 2 (index 1)
       currentIndex = 1;
       showImage(currentIndex, false);
       startBtn.style.display = 'none';
@@ -200,15 +203,13 @@
         } else {
           clearInterval(autoAdvance);
         }
-      }, 2400); // 2,4 sekunder pr billede
+      }, 2350); // 2,35 sekunder pr billede
     }
 
-    // Tryk på forside-knap
     startBtn.addEventListener('click', () => {
       startSlideshow();
     });
 
-    // Pil knapper
     leftArrow.addEventListener('click', () => {
       clearInterval(autoAdvance);
       prevImage();
@@ -234,13 +235,15 @@
       touchStartX = null;
     });
 
-    // Gør så billeder aldrig scroller – altid 100% dækning
-    window.addEventListener('resize', () => {
+    // Sikrer billedet altid dækker skærmen 100%
+    function resizeImg() {
       img.style.width = '100vw';
       img.style.height = '100dvh';
-    });
+    }
+    window.addEventListener('resize', resizeImg);
+    window.addEventListener('orientationchange', resizeImg);
+    resizeImg();
 
-    // Deaktiver pilene og swipe på forsiden
     updateArrows();
     img.ondragstart = () => false;
   </script>
