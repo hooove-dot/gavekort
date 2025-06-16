@@ -140,7 +140,7 @@
       startBtn.style.display = "none";
       showControls(true);
       autoAdvance = true;
-      slideshowTimer = setTimeout(advance, 2400);
+      slideshowTimer = setTimeout(advance, 3000);
     }
 
     function advance() {
@@ -148,7 +148,7 @@
       if (current < images.length - 1) {
         current++;
         showImage(current, true);
-        slideshowTimer = setTimeout(advance, 2400);
+        slideshowTimer = setTimeout(advance, 3000);
       } else {
         autoAdvance = false;
       }
