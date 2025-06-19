@@ -2,8 +2,8 @@
 <html lang="da">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gavekort</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Slideshow</title>
   <style>
     html, body {
       margin: 0;
@@ -15,27 +15,22 @@
 
     .slideshow-container {
       position: relative;
-      width: 100%;
+      width: 100vw;
       height: 100vh;
     }
 
     .slide {
-      display: none;
       position: absolute;
       width: 100%;
       height: 100%;
-      transition: opacity 1s ease;
+      opacity: 0;
+      transition: opacity 1.2s ease-in-out;
+      z-index: 0;
     }
 
     .slide.active {
-      display: block;
       opacity: 1;
       z-index: 1;
-    }
-
-    .slide.fade-out {
-      opacity: 0;
-      z-index: 0;
     }
 
     .slide img {
@@ -83,82 +78,94 @@
   </style>
 </head>
 <body>
+  <div class="slideshow-container">
+    <div class="start-overlay" id="startOverlay">tryk for at starte</div>
 
-  <div class="slideshow-container" id="slideshow">
+    <div class="arrow left" id="prev">&#10094;</div>
+    <div class="arrow right" id="next">&#10095;</div>
 
-    <div class="slide active">
-      <img src="7ea4ee19-6395-4202-ad63-a472c00b4b9b.png" alt="Forside" />
-      <div class="start-overlay" id="startText">tryk for at starte</div>
-    </div>
-    <div class="slide"><img src="ChatGPT Image 19. jun. 2025, 16.31.57.png" /></div>
-    <div class="slide"><img src="Billede 2.jpg" /></div>
-    <div class="slide"><img src="Billede 23.jpg" /></div>
-    <div class="slide"><img src="f75d86de-b362-47a5-9e52-4ccb60d964ce.jpeg" /></div>
-    <div class="slide"><img src="Billede 24.jpg" /></div>
-    <div class="slide"><img src="Billede 20.jpg" /></div>
-    <div class="slide"><img src="fbb2e01b-6bf4-4859-9f85-418412b4abd0.jpg" /></div>
-    <div class="slide"><img src="Billede 25.jpg" /></div>
-    <div class="slide"><img src="Design uden navn.png" /></div>
-    <div class="slide"><img src="815FF0E0-1E99-4ADB-A9B8-CAEA128FE786.jpeg" /></div>
-    <div class="slide"><img src="Billede 3.jpg" /></div>
-    <div class="slide"><img src="Billede 12.jpg" /></div>
-    <div class="slide"><img src="E8A74AAA-BC3E-4E53-BD97-0C2FDAFE7BF9.png" /></div>
-    <div class="slide"><img src="F00B416B-3D7C-4E73-B92D-5E91168524C8.jpeg" /></div>
-    <div class="slide"><img src="Billede 4.jpg" /></div>
-    <div class="slide"><img src="Skærmbillede 2025-06-19 kl. 16.46.58.png" /></div>
-
-    <div class="arrow left" onclick="prevSlide()">&#10094;</div>
-    <div class="arrow right" onclick="nextSlide()">&#10095;</div>
+    <!-- Slides -->
+    <div class="slide active"><img src="7ea4ee19-6395-4202-ad63-a472c00b4b9b.png" alt="forside" /></div>
+    <div class="slide"><img src="ChatGPT Image 19. jun. 2025, 16.31.57.png" alt="" /></div>
+    <div class="slide"><img src="Billede 2.jpg" alt="" /></div>
+    <div class="slide"><img src="Billede 23.jpg" alt="" /></div>
+    <div class="slide"><img src="f75d86de-b362-47a5-9e52-4ccb60d964ce.jpeg" alt="" /></div>
+    <div class="slide"><img src="Billede 24.jpg" alt="" /></div>
+    <div class="slide"><img src="Billede 20.jpg" alt="" /></div>
+    <div class="slide"><img src="fbb2e01b-6bf4-4859-9f85-418412b4abd0.jpg" alt="" /></div>
+    <div class="slide"><img src="Billede 25.jpg" alt="" /></div>
+    <div class="slide"><img src="Design uden navn.png" alt="" /></div>
+    <div class="slide"><img src="815FF0E0-1E99-4ADB-A9B8-CAEA128FE786.jpeg" alt="" /></div>
+    <div class="slide"><img src="Billede 3.jpg" alt="" /></div>
+    <div class="slide"><img src="Billede 12.jpg" alt="" /></div>
+    <div class="slide"><img src="E8A74AAA-BC3E-4E53-BD97-0C2FDAFE7BF9.png" alt="" /></div>
+    <div class="slide"><img src="F00B416B-3D7C-4E73-B92D-5E91168524C8.jpeg" alt="" /></div>
+    <div class="slide"><img src="Billede 4.jpg" alt="" /></div>
+    <div class="slide"><img src="Skærmbillede 2025-06-19 kl. 16.46.58.png" alt="" /></div>
   </div>
 
   <script>
-    let currentIndex = 0;
-    let slides = document.querySelectorAll(".slide");
-    let interval;
-    let hasStarted = false;
+    const slides = document.querySelectorAll(".slide");
+    const prevBtn = document.getElementById("prev");
+    const nextBtn = document.getElementById("next");
+    const overlay = document.getElementById("startOverlay");
 
-    async function enableWakeLock() {
-      try {
-        if ('wakeLock' in navigator) {
-          await navigator.wakeLock.request('screen');
-        }
-      } catch (err) {
-        console.warn("Wake lock not supported:", err);
-      }
-    }
+    let currentSlide = 0;
+    let slideshowStarted = false;
+    let autoSlideInterval;
 
     function showSlide(index) {
       slides.forEach((slide, i) => {
-        slide.classList.remove("active", "fade-out");
-        if (i === index) {
-          slide.classList.add("active");
-        } else {
-          slide.classList.add("fade-out");
-        }
+        slide.classList.remove("active");
       });
+      slides[index].classList.add("active");
     }
 
     function nextSlide() {
-      currentIndex = (currentIndex + 1) % slides.length;
-      showSlide(currentIndex);
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
     }
 
     function prevSlide() {
-      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-      showSlide(currentIndex);
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      showSlide(currentSlide);
     }
 
     function startSlideshow() {
-      if (hasStarted) return;
-      hasStarted = true;
-      document.getElementById("startText").style.display = "none";
-      interval = setInterval(nextSlide, 3000);
-      enableWakeLock();
+      slideshowStarted = true;
+      overlay.style.display = "none";
+      autoSlideInterval = setInterval(nextSlide, 3000);
     }
 
-    document.getElementById("slideshow").addEventListener("click", () => {
-      startSlideshow();
+    prevBtn.addEventListener("click", () => {
+      clearInterval(autoSlideInterval);
+      prevSlide();
     });
+
+    nextBtn.addEventListener("click", () => {
+      clearInterval(autoSlideInterval);
+      nextSlide();
+    });
+
+    overlay.addEventListener("click", startSlideshow);
+
+    // Wake Lock for mobilskærm
+    let wakeLock = null;
+    async function requestWakeLock() {
+      try {
+        wakeLock = await navigator.wakeLock.request('screen');
+      } catch (err) {
+        console.error(`${err.name}, ${err.message}`);
+      }
+    }
+    if ('wakeLock' in navigator) {
+      requestWakeLock();
+      document.addEventListener('visibilitychange', () => {
+        if (wakeLock !== null && document.visibilityState === 'visible') {
+          requestWakeLock();
+        }
+      });
+    }
   </script>
 </body>
 </html>
