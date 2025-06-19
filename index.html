@@ -4,179 +4,54 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>∞ gavekort</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      height: 100%;
-      background-color: black;
-      overflow: hidden;
-      font-family: sans-serif;
-    }
-
-    .slideshow-container {
-      position: relative;
-      height: 100vh;
-      width: 100vw;
-    }
-
-    .slide {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-      object-fit: contain;
-      background-color: black;
-    }
-
-    .slide.active {
-      opacity: 1;
-      z-index: 1;
-    }
-
-    .arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 2rem;
-      background-color: rgba(255, 255, 255, 0.4);
-      color: black;
-      border: none;
-      padding: 0.5em;
-      cursor: pointer;
-      z-index: 10;
-      border-radius: 50%;
-    }
-
-    .arrow.left {
-      left: 10px;
-    }
-
-    .arrow.right {
-      right: 10px;
-    }
-
-    #startText {
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: rgba(0,0,0,0.5);
-      color: white;
-      font-size: 1.8rem;
-      padding: 0.5rem 1.2rem;
-      border-radius: 10px;
-      z-index: 5;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="slideshow-container" onclick="startSlideshow()">
+    <img src="7ea4ee19-6395-4202-ad63-a472c00b4b9b.png" class="slide active" />
+    <!-- Tilføj dine andre billeder her som nye <img> tags -->
+    <img src="Billede 2.jpg" class="slide" />
+    <img src="Billede 3.jpg" class="slide" />
+    <!-- ... -->
 
-<div class="slideshow-container">
-  <img src="7ea4ee19-6395-4202-ad63-a472c00b4b9b.png" class="slide active" />
-  <img src="ChatGPT Image 19. jun. 2025, 16.31.57.png" class="slide" />
-  <img src="Billede 2.jpg" class="slide" />
-  <img src="Billede 23.jpg" class="slide" />
-  <img src="f75d86de-b362-47a5-9e52-4ccb60d964ce.jpeg" class="slide" />
-  <img src="Billede 24.jpg" class="slide" />
-  <img src="Billede 20.jpg" class="slide" />
-  <img src="fbb2e01b-6bf4-4859-9f85-418412b4abd0.jpg" class="slide" />
-  <img src="Billede 25.jpg" class="slide" />
-  <img src="Design uden navn.png" class="slide" />
-  <img src="815FF0E0-1E99-4ADB-A9B8-CAEA128FE786.jpeg" class="slide" />
-  <img src="Billede 3.jpg" class="slide" />
-  <img src="Billede 12.jpg" class="slide" />
-  <img src="E8A74AAA-BC3E-4E53-BD97-0C2FDAFE7BF9.png" class="slide" />
-  <img src="F00B416B-3D7C-4E73-B92D-5E91168524C8.jpeg" class="slide" />
-  <img src="Billede 4.jpg" class="slide" />
-  <img src="Skærmbillede 2025-06-19 kl. 16.46.58.png" class="slide" />
+    <div class="start-text" id="startText">tryk for at starte</div>
+    <button class="arrow left" onclick="prevSlide()">‹</button>
+    <button class="arrow right" onclick="nextSlide()">›</button>
+  </div>
 
-  <div id="startText">tryk for at starte</div>
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const startText = document.getElementById('startText');
+    let current = 0;
+    let started = false;
 
-  <button class="arrow left">&#10094;</button>
-  <button class="arrow right">&#10095;</button>
-</div>
-
-<script>
-  const slides = document.querySelectorAll('.slide');
-  const startText = document.getElementById('startText');
-  const prevBtn = document.querySelector('.arrow.left');
-  const nextBtn = document.querySelector('.arrow.right');
-  let current = 0;
-  let autoPlay = true;
-  let interval;
-
-  function showSlide(index) {
-    slides.forEach((slide, i) => {
-      slide.classList.remove('active');
-      if (i === index) slide.classList.add('active');
-    });
-  }
-
-  function nextSlide() {
-    current = (current + 1) % slides.length;
-    showSlide(current);
-  }
-
-  function prevSlide() {
-    current = (current - 1 + slides.length) % slides.length;
-    showSlide(current);
-  }
-
-  function startSlideshow() {
-    if (startText) startText.style.display = 'none';
-    autoPlay = true;
-    interval = setInterval(nextSlide, 3000);
-  }
-
-  function stopSlideshow() {
-    autoPlay = false;
-    clearInterval(interval);
-  }
-
-  document.querySelector('.slideshow-container').addEventListener('click', () => {
-    if (!autoPlay) {
-      startSlideshow();
+    function showSlide(index) {
+      slides.forEach((s, i) => {
+        s.classList.remove('active');
+        if (i === index) s.classList.add('active');
+      });
     }
-  });
 
-  prevBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    stopSlideshow();
-    prevSlide();
-  });
-
-  nextBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    stopSlideshow();
-    nextSlide();
-  });
-
-  // Wake Lock to prevent screen from turning off
-  let wakeLock = null;
-  const requestWakeLock = async () => {
-    try {
-      wakeLock = await navigator.wakeLock.request('screen');
-    } catch (err) {
-      console.error(`${err.name}, ${err.message}`);
+    function nextSlide() {
+      current = (current + 1) % slides.length;
+      showSlide(current);
     }
-  };
 
-  if ('wakeLock' in navigator) {
-    requestWakeLock();
-    document.addEventListener('visibilitychange', () => {
-      if (wakeLock !== null && document.visibilityState === 'visible') {
-        requestWakeLock();
+    function prevSlide() {
+      current = (current - 1 + slides.length) % slides.length;
+      showSlide(current);
+    }
+
+    function startSlideshow() {
+      if (started) return;
+      started = true;
+      startText.style.display = 'none';
+      setInterval(nextSlide, 3000);
+
+      if ('wakeLock' in navigator) {
+        navigator.wakeLock.request('screen').catch(console.error);
       }
-    });
-  }
-</script>
+    }
+  </script>
 </body>
 </html>
