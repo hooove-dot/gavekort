@@ -3,150 +3,156 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Billedfremviser</title>
+  <title>Gavekort</title>
   <style>
-    html, body {
+    body, html {
       margin: 0;
       padding: 0;
       background: black;
       overflow: hidden;
       height: 100%;
+      font-family: sans-serif;
     }
-
+    .slideshow-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
     .slide {
       position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
       opacity: 0;
-      transition: opacity 1s ease;
+      transition: opacity 1s ease-in-out;
     }
-
     .slide.active {
       opacity: 1;
       z-index: 1;
     }
-
-    .cover-start {
+    .forside {
       object-fit: contain !important;
       background: black;
+    }
+
+    #startText {
+      position: absolute;
+      bottom: 40px;
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-size: 24px;
+      z-index: 2;
+      opacity: 1;
+      transition: opacity 0.5s;
     }
 
     .nav-button {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(0, 0, 0, 0.4);
-      color: white;
+      background: rgba(255, 255, 255, 0.3);
+      color: black;
       border: none;
-      font-size: 2em;
-      padding: 0.2em 0.5em;
-      z-index: 2;
+      font-size: 30px;
+      padding: 10px;
       cursor: pointer;
+      z-index: 3;
     }
+    #prev { left: 10px; }
+    #next { right: 10px; }
 
-    .nav-button:hover {
-      background: rgba(0, 0, 0, 0.6);
-    }
-
-    #prev {
-      left: 10px;
-    }
-
-    #next {
-      right: 10px;
+    .forside.active ~ #prev,
+    .forside.active ~ #next,
+    .forside.active ~ #startText {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <!-- Navigation -->
-  <button id="prev" class="nav-button">&#10094;</button>
-  <button id="next" class="nav-button">&#10095;</button>
+  <div class="slideshow-container">
+    <img class="slide active forside" src="7ea4ee19-6395-4202-ad63-a472c00b4b9b.png" />
+    <img class="slide" src="ChatGPT Image 19. jun. 2025, 16.31.57.png" />
+    <img class="slide" src="Billede 2.jpg" />
+    <img class="slide" src="Billede 23.jpg" />
+    <img class="slide" src="f75d86de-b362-47a5-9e52-4ccb60d964ce.jpeg" />
+    <img class="slide" src="Billede 24.jpg" />
+    <img class="slide" src="Billede 20.jpg" />
+    <img class="slide" src="fbb2e01b-6bf4-4859-9f85-418412b4abd0.jpg" />
+    <img class="slide" src="Billede 25.jpg" />
+    <img class="slide" src="Design uden navn.png" />
+    <img class="slide" src="815FF0E0-1E99-4ADB-A9B8-CAEA128FE786.jpeg" />
+    <img class="slide" src="Billede 3.jpg" />
+    <img class="slide" src="Billede 12.jpg" />
+    <img class="slide" src="E8A74AAA-BC3E-4E53-BD97-0C2FDAFE7BF9.png" />
+    <img class="slide" src="F00B416B-3D7C-4E73-B92D-5E91168524C8.jpeg" />
+    <img class="slide" src="Billede 4.jpg" />
+    <img class="slide" src="Skærmbillede 2025-06-19 kl. 16.46.58.png" />
 
-  <!-- Billeder -->
-  <img class="slide active cover-start" src="7ea4ee19-6395-4202-ad63-a472c00b4b9b.png" />
-  <img class="slide" src="ChatGPT Image 19. jun. 2025, 16.31.57.png" />
-  <img class="slide" src="Billede 2.jpg" />
-  <img class="slide" src="Billede 23.jpg" />
-  <img class="slide" src="f75d86de-b362-47a5-9e52-4ccb60d964ce.jpeg" />
-  <img class="slide" src="Billede 24.jpg" />
-  <img class="slide" src="Billede 20.jpg" />
-  <img class="slide" src="fbb2e01b-6bf4-4859-9f85-418412b4abd0.jpg" />
-  <img class="slide" src="Billede 25.jpg" />
-  <img class="slide" src="Design uden navn.png" />
-  <img class="slide" src="815FF0E0-1E99-4ADB-A9B8-CAEA128FE786.jpeg" />
-  <img class="slide" src="Billede 3.jpg" />
-  <img class="slide" src="Billede 12.jpg" />
-  <img class="slide" src="E8A74AAA-BC3E-4E53-BD97-0C2FDAFE7BF9.png" />
-  <img class="slide" src="F00B416B-3D7C-4E73-B92D-5E91168524C8.jpeg" />
-  <img class="slide" src="Billede 4.jpg" />
-  <img class="slide" src="Skærmbillede 2025-06-19 kl. 16.46.58.png" />
+    <button class="nav-button" id="prev">&#10094;</button>
+    <button class="nav-button" id="next">&#10095;</button>
+    <div id="startText">tryk for at starte</div>
+  </div>
 
   <script>
     const slides = document.querySelectorAll(".slide");
-    const prevBtn = document.getElementById("prev");
-    const nextBtn = document.getElementById("next");
-    let current = 0;
+    let currentSlide = 0;
+    let started = false;
     let interval;
+    const delay = 3000;
 
-    function showSlide(index) {
-      slides.forEach((slide, i) => {
-        slide.classList.remove("active");
-        if (i === index) {
-          slide.classList.add("active");
-        }
+    const showSlide = (index) => {
+      slides.forEach(slide => slide.classList.remove("active"));
+      slides[index].classList.add("active");
+    };
+
+    const preloadImage = (index, callback) => {
+      const img = new Image();
+      img.src = slides[index].src;
+      img.onload = callback;
+    };
+
+    const nextSlide = () => {
+      const next = (currentSlide + 1) % slides.length;
+      preloadImage(next, () => {
+        currentSlide = next;
+        showSlide(currentSlide);
       });
-    }
+    };
 
-    function nextSlide() {
-      current = (current + 1) % slides.length;
-      showSlide(current);
-    }
+    const prevSlide = () => {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      showSlide(currentSlide);
+    };
 
-    function prevSlide() {
-      current = (current - 1 + slides.length) % slides.length;
-      showSlide(current);
-    }
-
-    function startSlideShow() {
-      interval = setInterval(() => {
+    const startSlideshow = () => {
+      if (!started) {
+        started = true;
+        document.getElementById("startText").style.opacity = 0;
         nextSlide();
-      }, 3000); // 3 sekunder
-    }
+        interval = setInterval(nextSlide, delay);
+        enableWakeLock();
+      }
+    };
 
-    function stopSlideShow() {
+    document.body.addEventListener("click", startSlideshow);
+    document.getElementById("next").addEventListener("click", () => {
       clearInterval(interval);
-    }
-
-    nextBtn.addEventListener("click", () => {
-      stopSlideShow();
       nextSlide();
-      startSlideShow();
     });
-
-    prevBtn.addEventListener("click", () => {
-      stopSlideShow();
+    document.getElementById("prev").addEventListener("click", () => {
+      clearInterval(interval);
       prevSlide();
-      startSlideShow();
     });
 
-    showSlide(current);
-    startSlideShow();
-
-    // Wake Lock API for at holde skærmen tændt
+    // Wake lock
     let wakeLock = null;
-    async function requestWakeLock() {
+    async function enableWakeLock() {
       try {
         wakeLock = await navigator.wakeLock.request("screen");
       } catch (err) {
         console.error(`${err.name}, ${err.message}`);
       }
-    }
-
-    if ("wakeLock" in navigator) {
-      requestWakeLock();
     }
   </script>
 </body>
