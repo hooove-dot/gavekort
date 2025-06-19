@@ -1,82 +1,81 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gavekort</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>∞ gavekort</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <div class="slider">
-    <!-- 1: Forside -->
-    <img src="Billede 1.jpg" class="slide active" />
+    <!-- Forside -->
+    <img class="slide" src="7ea4ee19-6395-4202-ad63-a472c00b4b9b.png" alt="tryk for at starte">
+    <!-- Dine øvrige billeder -->
+    <img class="slide" src="ChatGPT Image 19. jun. 2025, 16.31.57.png" alt="">
+    <img class="slide" src="Billede 2.jpg" alt="">
+    <img class="slide" src="Billede 23.jpg" alt="">
+    <img class="slide" src="f75d86de-b362-47a5-9e52-4ccb60d964ce.jpeg" alt="">
+    <img class="slide" src="Billede 24.jpg" alt="">
+    <img class="slide" src="Billede 20.jpg" alt="">
+    <img class="slide" src="fbb2e01b-6bf4-4859-9f85-418412b4abd0.jpg" alt="">
+    <img class="slide" src="Billede 25.jpg" alt="">
+    <img class="slide" src="Design uden navn.png" alt="">
+    <img class="slide" src="815FF0E0-1E99-4ADB-A9B8-CAEA128FE786.jpeg" alt="">
+    <img class="slide" src="Billede 3.jpg" alt="">
+    <img class="slide" src="Billede 12.jpg" alt="">
+    <img class="slide" src="E8A74AAA-BC3E-4E53-BD97-0C2FDAFE7BF9.png" alt="">
+    <img class="slide" src="F00B416B-3D7C-4E73-B92D-5E91168524C8.jpeg" alt="">
+    <img class="slide" src="Billede 4.jpg" alt="">
+    <img class="slide" src="Skærmbillede 2025-06-19 kl. 16.46.58.png" alt="">
 
-    <!-- 2–n: Øvrige slides -->
-    <img src="Billede 2.jpg" class="slide" />
-    <img src="Billede 3.jpg" class="slide" />
-    <img src="Billede 4.jpg" class="slide" />
-    <!-- osv… -->
+    <!-- Navigation -->
+    <button class="arrow left">&lt;</button>
+    <button class="arrow right">&gt;</button>
 
-    <button class="arrow left" aria-label="Forrige slide">&#10094;</button>
-    <button class="arrow right" aria-label="Næste slide">&#10095;</button>
-
+    <!-- “tryk for at starte” -->
     <div class="start-text">tryk for at starte</div>
   </div>
 
   <script>
-    const slides      = document.querySelectorAll('.slide');
-    const leftArrow   = document.querySelector('.arrow.left');
-    const rightArrow  = document.querySelector('.arrow.right');
-    const startText   = document.querySelector('.start-text');
-    let   current     = 0;
-    let   intervalId;
+    const slides = document.querySelectorAll('.slide');
+    const left   = document.querySelector('.arrow.left');
+    const right  = document.querySelector('.arrow.right');
+    const start  = document.querySelector('.start-text');
+    let current = 0, timer;
 
-    function showSlide(index) {
-      slides.forEach((s, i) => {
-        s.classList.remove('active');
-        s.style.opacity = '0';
-      });
-      slides[index].classList.add('active');
-      slides[index].style.opacity = '1';
-
-      // Kun vis "tryk for at starte" på forsiden
-      startText.style.display = index === 0 ? 'block' : 'none';
+    function show(idx) {
+      slides.forEach(s=>s.classList.remove('active'));
+      slides[idx].classList.add('active');
     }
 
-    function nextSlide() {
+    function next() {
       current = (current + 1) % slides.length;
-      showSlide(current);
+      show(current);
     }
-
-    function prevSlide() {
+    function prev() {
       current = (current - 1 + slides.length) % slides.length;
-      showSlide(current);
+      show(current);
     }
 
-    // Sæt interval til automatisk skift every 3 sek.
-    function startAuto() {
-      intervalId = setInterval(nextSlide, 3000);
-    }
-    function resetAuto() {
-      clearInterval(intervalId);
-      startAuto();
-    }
-
-    // Event listeners
-    rightArrow.addEventListener('click', () => {
-      nextSlide();
-      resetAuto();
+    right.addEventListener('click', () => {
+      clearInterval(timer);
+      next();
     });
-    leftArrow.addEventListener('click', () => {
-      prevSlide();
-      resetAuto();
+    left.addEventListener('click', () => {
+      clearInterval(timer);
+      prev();
     });
 
-    // Initial opstart
-    showSlide(current);
-    startAuto();
+    start.addEventListener('click', async () => {
+      start.style.display = 'none';
+      show(0);
+      timer = setInterval(next, 3000);
+      // Wake lock
+      if ('wakeLock' in navigator) {
+        try { await navigator.wakeLock.request('screen'); }
+        catch (e) { console.warn('Wake Lock fejlede:', e); }
+      }
+    });
   </script>
-
 </body>
 </html>
