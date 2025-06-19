@@ -39,9 +39,10 @@
       top: 50%;
       transform: translateY(-50%);
       font-size: 3rem;
-      background: rgba(255,255,255,0.5);
+      color: #007bff;
+      background-color: rgba(255,255,255,0.7);
       border-radius: 50%;
-      padding: 0.5rem;
+      padding: 0.3rem 0.6rem;
       cursor: pointer;
       z-index: 2;
       user-select: none;
@@ -76,8 +77,8 @@
 </head>
 <body>
   <div class="slideshow-container">
-    <div class="arrow left" onclick="prevSlide()">&#10094;</div>
-    <div class="arrow right" onclick="nextSlide()">&#10095;</div>
+    <div class="arrow left" onclick="prevSlide()">‹</div>
+    <div class="arrow right" onclick="nextSlide()">›</div>
     <div id="startText">tryk for at starte</div>
   </div>
 
@@ -145,7 +146,7 @@
 
     container.addEventListener("click", startSlideshow);
 
-    // Wake Lock (forhindrer skærmen i at gå i sort)
+    // Wake Lock
     let wakeLock = null;
     async function enableWakeLock() {
       try {
@@ -153,7 +154,7 @@
           wakeLock = await navigator.wakeLock.request("screen");
         }
       } catch (err) {
-        console.error(`Wake Lock-fejl: ${err.name}, ${err.message}`);
+        console.error("Wake Lock-fejl:", err);
       }
     }
   </script>
