@@ -51,19 +51,22 @@
   }
 
   .fade {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    opacity: 0;
-    transition: opacity 1.5s ease;
-    z-index: 0;
-  }
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+  z-index: 0;
+  pointer-events: none;
+}
 
-  .visible {
-    opacity: 1;
-    z-index: 1;
-  }
+.visible {
+  opacity: 1;
+  z-index: 1;
+}
 </style>
 </head>
 <body>
@@ -79,60 +82,58 @@
     <img id="img2" class="fade">
   </div>
 
-  <script>
-    const images = [
-      "ChatGPT Image 19. jun. 2025, 16.31.57.png",
-      "Billede 2.jpg",
-      "Billede 23.jpg",
-      "f75d86de-b362-47a5-9e52-4ccb60d964ce.jpeg",
-      "Billede 24.jpg",
-      "Billede 20.jpg",
-      "fbb2e01b-6bf4-4859-9f85-418412b4abd0.jpg",
-      "Billede 25.jpg",
-      "Design uden navn.png",
-      "815FF0E0-1E99-4ADB-A9B8-CAEA128FE786.jpeg",
-      "Billede 3.jpg",
-      "Billede 12.jpg",
-      "E8A74AAA-BC3E-4E53-BD97-0C2FDAFE7BF9.png",
-      "F00B416B-3D7C-4E73-B92D-5E91168524C8.jpeg",
-      "Billede 4.jpg",
-      "Skærmbillede 2025-06-19 kl. 16.46.58.png"
-    ];
+<script>
+  const images = [
+    "ChatGPT Image 19. jun. 2025, 16.31.57.png",
+    "Billede 2.jpg",
+    "Billede 23.jpg",
+    "f75d86de-b362-47a5-9e52-4ccb60d964ce.jpeg",
+    "Billede 24.jpg",
+    "Billede 20.jpg",
+    "fbb2e01b-6bf4-4859-9f85-418412b4abd0.jpg",
+    "Billede 25.jpg",
+    "Design uden navn.png",
+    "815FF0E0-1E99-4ADB-A9B8-CAEA128FE786.jpeg",
+    "Billede 3.jpg",
+    "Billede 12.jpg",
+    "E8A74AAA-BC3E-4E53-BD97-0C2FDAFE7BF9.png",
+    "F00B416B-3D7C-4E73-B92D-5E91168524C8.jpeg",
+    "Billede 4.jpg",
+    "Skærmbillede 2025-06-19 kl. 16.46.58.png"
+  ];
 
-    let current = 0;
-    let showingImg1 = true;
+  let current = 0;
+  let showingImg1 = true;
 
-    const img1 = document.getElementById("img1");
-    const img2 = document.getElementById("img2");
+  const img1 = document.getElementById("img1");
+  const img2 = document.getElementById("img2");
 
-    img1.src = images[0];
-    img1.classList.add("visible");
+  img1.src = images[0];
+  img1.classList.add("visible");
 
-    function advance() {
-      const next = (current + 1) % images.length;
-      const nextImg = images[next];
+  function advance() {
+    const next = (current + 1) % images.length;
+    const nextImgSrc = images[next];
+    const incoming = showingImg1 ? img2 : img1;
+    const outgoing = showingImg1 ? img1 : img2;
 
-      if (showingImg1) {
-        img2.src = nextImg;
-        img2.classList.add("visible");
-        img1.classList.remove("visible");
-      } else {
-        img1.src = nextImg;
-        img1.classList.add("visible");
-        img2.classList.remove("visible");
-      }
+    // For at sikre fade, først skift src og vent på load
+    incoming.onload = () => {
+      incoming.classList.add("visible");
+      outgoing.classList.remove("visible");
+    };
+    incoming.src = nextImgSrc;
 
-      showingImg1 = !showingImg1;
-      current = next;
+    showingImg1 = !showingImg1;
+    current = next;
 
-      setTimeout(advance, 4000);
-    }
+    setTimeout(advance, 3000);
+  }
 
-    // Start slideshow ved klik
-    document.getElementById("start-button").addEventListener("click", () => {
-      document.getElementById("start-screen").style.display = "none";
-      setTimeout(advance, 5000); //første billede vises i 5 sek. 
-    });
-  </script>
+  document.getElementById("start-button").addEventListener("click", () => {
+    document.getElementById("start-screen").style.display = "none";
+    setTimeout(advance, 4000); // 4 sekunder første billede
+  });
+</script>
 </body>
 </html>
