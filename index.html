@@ -1,181 +1,141 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-  <meta charset="UTF-8">
-  <title>∞ gavekort</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
- <style>
-}
-.nav-button.left { left: 10px; }
-.nav-button.right { right: 10px; }
-  html, body {
-    margin: 0;
-    padding: 0;
-    background: #f7eddc;
-    font-family: 'Comic Sans MS', sans-serif;
-    height: 100vh;
-    overflow: hidden;
-  }
-     .nav-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.4);
-  color: white;
-  font-size: 2rem;
-  padding: 0.4rem 0.7rem;
-  border: none;
-  cursor: pointer;
-  z-index: 10;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gavekort</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      height: 100%;
+      overflow: hidden;
+    }
 
+    .slide {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out;
+      z-index: 0;
+    }
 
-  #start-screen {
-    position: absolute;
-    width: 100vw;
-    height: 100vh;
-    background: #f7eddc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    z-index: 10;
-  }
+    .slide.active {
+      opacity: 1;
+      z-index: 1;
+    }
 
-  #start-screen img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-  }
+    #start-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: none;
+      color: white;
+      font-size: 2rem;
+      padding: 1rem 2rem;
+      border: 2px solid white;
+      cursor: pointer;
+      z-index: 10;
+    }
 
-  #start-button {
-    position: absolute;
-    bottom: 30px;
-    background: #fff5ee;
-    border: none;
-    font-size: 1.2em;
-    padding: 12px 24px;
-    border-radius: 12px;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  }
+    .nav-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0, 0, 0, 0.4);
+      color: white;
+      font-size: 2rem;
+      padding: 0.4rem 0.7rem;
+      border: none;
+      cursor: pointer;
+      z-index: 10;
+    }
 
-  #slideshow {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-  }
-
-  .fade {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  opacity: 0;
-  transition: opacity 1.5s ease-in-out;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.visible {
-  opacity: 1;
-  z-index: 1;
-}
-</style>
+    .nav-button.left { left: 10px; }
+    .nav-button.right { right: 10px; }
+  </style>
 </head>
-
-
 <body>
-  <body>
+
+  <button id="start-button">Tryk for at starte</button>
   <button class="nav-button left" onclick="prevSlide()">&#8249;</button>
   <button class="nav-button right" onclick="nextSlide()">&#8250;</button>
-  <!-- Startskærm med tryk-knap -->
-  <div id="start-screen">
-    <img src="7ea4ee19-6395-4202-ad63-a472c00b4b9b.png" alt="forside">
-    <button id="start-button">tryk for at starte</button>
-  </div>
 
-  <!-- Slideshow container -->
-  <div id="slideshow">
-    <img id="img1" class="fade">
-    <img id="img2" class="fade">
-  </div>
+  <!-- Billeder i korrekt rækkefølge -->
+  <img class="slide active" src="7ea4ee19-6395-4202-ad63-a472c00b4b9b.png" />
+  <img class="slide" src="ChatGPT Image 19. jun. 2025, 16.31.57.png" />
+  <img class="slide" src="Billede 2.jpg" />
+  <img class="slide" src="Billede 23.jpg" />
+  <img class="slide" src="f75d86de-b362-47a5-9e52-4ccb60d964ce.jpeg" />
+  <img class="slide" src="Billede 24.jpg" />
+  <img class="slide" src="Billede 20.jpg" />
+  <img class="slide" src="fbb2e01b-6bf4-4859-9f85-418412b4abd0.jpg" />
+  <img class="slide" src="Billede 25.jpg" />
+  <img class="slide" src="Design uden navn.png" />
+  <img class="slide" src="815FF0E0-1E99-4ADB-A9B8-CAEA128FE786.jpeg" />
+  <img class="slide" src="Billede 3.jpg" />
+  <img class="slide" src="Billede 12.jpg" />
+  <img class="slide" src="E8A74AAA-BC3E-4E53-BD97-0C2FDAFE7BF9.png" />
+  <img class="slide" src="F00B416B-3D7C-4E73-B92D-5E91168524C8.jpeg" />
+  <img class="slide" src="Billede 4.jpg" />
+  <img class="slide" src="Skærmbillede 2025-06-19 kl. 16.46.58.png" />
 
-<script>
-      if ('wakeLock' in navigator) {
-  let wakeLock = null;
-  const requestWakeLock = async () => {
-    try {
-      wakeLock = await navigator.wakeLock.request('screen');
-    } catch (err) {
-      console.error(`${err.name}, ${err.message}`);
+  <script>
+    const slides = document.querySelectorAll(".slide");
+    let current = 0;
+    let started = false;
+    let timer;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle("active", i === index);
+      });
     }
-  };
-  requestWakeLock();
-}
-  function prevSlide() {
-  current = (current - 1 + images.length) % images.length;
-  crossfadeTo(current);
-}
 
-function nextSlide() {
-  current = (current + 1) % images.length;
-  crossfadeTo(current);
-}
+    function advance() {
+      current = (current + 1) % slides.length;
+      showSlide(current);
+      timer = setTimeout(advance, 4000);
+    }
 
-  const images = [
-    "ChatGPT Image 19. jun. 2025, 16.31.57.png",
-    "Billede 2.jpg",
-    "Billede 23.jpg",
-    "f75d86de-b362-47a5-9e52-4ccb60d964ce.jpeg",
-    "Billede 24.jpg",
-    "Billede 20.jpg",
-    "fbb2e01b-6bf4-4859-9f85-418412b4abd0.jpg",
-    "Billede 25.jpg",
-    "Design uden navn.png",
-    "815FF0E0-1E99-4ADB-A9B8-CAEA128FE786.jpeg",
-    "Billede 3.jpg",
-    "Billede 12.jpg",
-    "E8A74AAA-BC3E-4E53-BD97-0C2FDAFE7BF9.png",
-    "F00B416B-3D7C-4E73-B92D-5E91168524C8.jpeg",
-    "Billede 4.jpg",
-    "Skærmbillede 2025-06-19 kl. 16.46.58.png"
-  ];
+    document.getElementById("start-button").addEventListener("click", () => {
+      document.getElementById("start-button").style.display = "none";
+      started = true;
+      advance();
+    });
 
-  let current = 0;
-  let showingImg1 = true;
+    function nextSlide() {
+      clearTimeout(timer);
+      current = (current + 1) % slides.length;
+      showSlide(current);
+      timer = setTimeout(advance, 4000);
+    }
 
-  const img1 = document.getElementById("img1");
-  const img2 = document.getElementById("img2");
+    function prevSlide() {
+      clearTimeout(timer);
+      current = (current - 1 + slides.length) % slides.length;
+      showSlide(current);
+      timer = setTimeout(advance, 4000);
+    }
 
-  img1.src = images[0];
-  img1.classList.add("visible");
+    // Forhindr sort skærm (Wake Lock)
+    if ('wakeLock' in navigator) {
+      let wakeLock = null;
+      const requestWakeLock = async () => {
+        try {
+          wakeLock = await navigator.wakeLock.request('screen');
+        } catch (err) {
+          console.error(`${err.name}, ${err.message}`);
+        }
+      };
+      requestWakeLock();
+    }
+  </script>
 
-  function advance() {
-    const next = (current + 1) % images.length;
-    const nextImgSrc = images[next];
-    const incoming = showingImg1 ? img2 : img1;
-    const outgoing = showingImg1 ? img1 : img2;
-
-    // For at sikre fade, først skift src og vent på load
-    incoming.onload = () => {
-      incoming.classList.add("visible");
-      outgoing.classList.remove("visible");
-    };
-    incoming.src = nextImgSrc;
-
-    showingImg1 = !showingImg1;
-    current = next;
-
-    setTimeout(advance, 3000);
-  }
-
-  document.getElementById("start-button").addEventListener("click", () => {
-    document.getElementById("start-screen").style.display = "none";
-    setTimeout(advance, 4000); // 4 sekunder første billede
-  });
-</script>
 </body>
 </html>
