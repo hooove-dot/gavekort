@@ -3,25 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gavekort</title>
+  <title>Billedfremviser</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
       background: black;
-      height: 100%;
       overflow: hidden;
+      height: 100%;
     }
 
     .slide {
       position: absolute;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       opacity: 0;
-      transition: opacity 1.5s ease-in-out;
-      z-index: 0;
+      transition: opacity 1s ease;
     }
 
     .slide.active {
@@ -29,45 +29,44 @@
       z-index: 1;
     }
 
-    #start-button {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: none;
-      color: white;
-      font-size: 2rem;
-      padding: 1rem 2rem;
-      border: 2px solid white;
-      cursor: pointer;
-      z-index: 10;
+    .cover-start {
+      object-fit: contain !important;
+      background: black;
     }
 
     .nav-button {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background-color: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.4);
       color: white;
-      font-size: 2rem;
-      padding: 0.4rem 0.7rem;
       border: none;
+      font-size: 2em;
+      padding: 0.2em 0.5em;
+      z-index: 2;
       cursor: pointer;
-      z-index: 10;
     }
 
-    .nav-button.left { left: 10px; }
-    .nav-button.right { right: 10px; }
+    .nav-button:hover {
+      background: rgba(0, 0, 0, 0.6);
+    }
+
+    #prev {
+      left: 10px;
+    }
+
+    #next {
+      right: 10px;
+    }
   </style>
 </head>
 <body>
+  <!-- Navigation -->
+  <button id="prev" class="nav-button">&#10094;</button>
+  <button id="next" class="nav-button">&#10095;</button>
 
-  <button id="start-button">Tryk for at starte</button>
-  <button class="nav-button left" onclick="prevSlide()">&#8249;</button>
-  <button class="nav-button right" onclick="nextSlide()">&#8250;</button>
-
-  <!-- Billeder i korrekt rækkefølge -->
-  <img class="slide active" src="7ea4ee19-6395-4202-ad63-a472c00b4b9b.png" />
+  <!-- Billeder -->
+  <img class="slide active cover-start" src="7ea4ee19-6395-4202-ad63-a472c00b4b9b.png" />
   <img class="slide" src="ChatGPT Image 19. jun. 2025, 16.31.57.png" />
   <img class="slide" src="Billede 2.jpg" />
   <img class="slide" src="Billede 23.jpg" />
@@ -87,55 +86,68 @@
 
   <script>
     const slides = document.querySelectorAll(".slide");
+    const prevBtn = document.getElementById("prev");
+    const nextBtn = document.getElementById("next");
     let current = 0;
-    let started = false;
-    let timer;
+    let interval;
 
     function showSlide(index) {
       slides.forEach((slide, i) => {
-        slide.classList.toggle("active", i === index);
+        slide.classList.remove("active");
+        if (i === index) {
+          slide.classList.add("active");
+        }
       });
     }
 
-    function advance() {
-      current = (current + 1) % slides.length;
-      showSlide(current);
-      timer = setTimeout(advance, 4000);
-    }
-
-    document.getElementById("start-button").addEventListener("click", () => {
-      document.getElementById("start-button").style.display = "none";
-      started = true;
-      advance();
-    });
-
     function nextSlide() {
-      clearTimeout(timer);
       current = (current + 1) % slides.length;
       showSlide(current);
-      timer = setTimeout(advance, 4000);
     }
 
     function prevSlide() {
-      clearTimeout(timer);
       current = (current - 1 + slides.length) % slides.length;
       showSlide(current);
-      timer = setTimeout(advance, 4000);
     }
 
-    // Forhindr sort skærm (Wake Lock)
-    if ('wakeLock' in navigator) {
-      let wakeLock = null;
-      const requestWakeLock = async () => {
-        try {
-          wakeLock = await navigator.wakeLock.request('screen');
-        } catch (err) {
-          console.error(`${err.name}, ${err.message}`);
-        }
-      };
+    function startSlideShow() {
+      interval = setInterval(() => {
+        nextSlide();
+      }, 3000); // 3 sekunder
+    }
+
+    function stopSlideShow() {
+      clearInterval(interval);
+    }
+
+    nextBtn.addEventListener("click", () => {
+      stopSlideShow();
+      nextSlide();
+      startSlideShow();
+    });
+
+    prevBtn.addEventListener("click", () => {
+      stopSlideShow();
+      prevSlide();
+      startSlideShow();
+    });
+
+    showSlide(current);
+    startSlideShow();
+
+    // Wake Lock API for at holde skærmen tændt
+    let wakeLock = null;
+    async function requestWakeLock() {
+      try {
+        wakeLock = await navigator.wakeLock.request("screen");
+      } catch (err) {
+        console.error(`${err.name}, ${err.message}`);
+      }
+    }
+
+    if ("wakeLock" in navigator) {
       requestWakeLock();
     }
   </script>
-
 </body>
 </html>
