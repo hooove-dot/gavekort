@@ -5,26 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Gavekort</title>
   <style>
-    html, body {
+    * {
       margin: 0;
       padding: 0;
-      background-color: black;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      width: 100%;
+      background: black;
       overflow: hidden;
       font-family: sans-serif;
     }
 
     .slideshow-container {
       position: relative;
-      width: 100vw;
       height: 100vh;
+      width: 100vw;
       background-color: black;
     }
 
     .slide {
       position: absolute;
-      width: 100%;
+      top: 0;
+      left: 0;
       height: 100%;
-      object-fit: contain; /* Ændres fra "cover" til "contain" */
+      width: 100%;
+      object-fit: contain; /* ingen beskæring */
       opacity: 0;
       transition: opacity 1s ease-in-out;
       z-index: 0;
@@ -40,11 +48,11 @@
       top: 50%;
       transform: translateY(-50%);
       font-size: 3rem;
-      color: white;
-      background-color: rgba(0,0,0,0.4);
+      color: black;
+      background-color: rgba(255, 255, 255, 0.6);
       border: none;
       border-radius: 50%;
-      padding: 0.2em 0.5em;
+      padding: 0.3em 0.5em;
       cursor: pointer;
       z-index: 10;
       user-select: none;
@@ -105,6 +113,7 @@
     let intervalId = null;
     let hasStarted = false;
 
+    // Preload images and add to DOM
     imageFilenames.forEach((filename, index) => {
       const img = document.createElement("img");
       img.src = filename;
@@ -138,15 +147,15 @@
       enableWakeLock();
     }
 
-    // Wake Lock
+    // Wake Lock API
     let wakeLock = null;
     async function enableWakeLock() {
       try {
-        if ("wakeLock" in navigator) {
-          wakeLock = await navigator.wakeLock.request("screen");
+        if ('wakeLock' in navigator) {
+          wakeLock = await navigator.wakeLock.request('screen');
         }
       } catch (err) {
-        console.error("Wake Lock-fejl:", err);
+        console.error("Wake lock-fejl:", err);
       }
     }
   </script>
