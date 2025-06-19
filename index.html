@@ -28,13 +28,9 @@
       opacity: 0;
     }
 
-    .slide:first-of-type {
-      object-fit: contain;
-      background-color: #fff;
-    }
 
-    .slide:not(:first-of-type) {
-      object-fit: cover;
+    .slide: {
+      object-fit: cover!important;
     }
 
     .slide.active {
