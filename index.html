@@ -1,76 +1,182 @@
-<style>
-  body, html {
-    margin: 0;
-    padding: 0;
-    background-color: black;
-    height: 100%;
-    overflow: hidden;
-  }
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gavekort</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  #slideshow {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-  }
+    html, body {
+      height: 100%;
+      background-color: black;
+      overflow: hidden;
+    }
 
-  .slide {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 1.5s ease-in-out;
-    object-fit: contain;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+    #slideshow {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
 
-  .slide.active {
-    opacity: 1;
-    z-index: 1;
-  }
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-  .arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 2.5em;
-    color: white;
-    background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 50%;
-    padding: 10px;
-    cursor: pointer;
-    z-index: 2;
-    user-select: none;
-  }
+    .slide.active {
+      opacity: 1;
+      z-index: 1;
+    }
 
-  .left {
-    left: 10px;
-  }
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
 
-  .right {
-    right: 10px;
-  }
+    .nav-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.5);
+      border: none;
+      padding: 10px 15px;
+      font-size: 2rem;
+      cursor: pointer;
+      z-index: 2;
+      border-radius: 50%;
+    }
 
-  #startOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255,255,255,0.0);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 2em;
-    z-index: 3;
-    cursor: pointer;
-  }
+    #prevBtn {
+      left: 10px;
+    }
 
-  img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-  }
-</style>
+    #nextBtn {
+      right: 10px;
+    }
+
+    #startOverlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      font-family: sans-serif;
+      z-index: 3;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="slideshow">
+    <div id="startOverlay">tryk for at starte</div>
+    <button class="nav-button" id="prevBtn">&#10094;</button>
+    <button class="nav-button" id="nextBtn">&#10095;</button>
+  </div>
+
+  <script>
+    const imageFiles = [
+      "7ea4ee19-6395-4202-ad63-a472c00b4b9b.png",
+      "ChatGPT Image 19. jun. 2025, 16.31.57.png",
+      "Billede 2.jpg",
+      "Billede 23.jpg",
+      "f75d86de-b362-47a5-9e52-4ccb60d964ce.jpeg",
+      "Billede 24.jpg",
+      "Billede 20.jpg",
+      "fbb2e01b-6bf4-4859-9f85-418412b4abd0.jpg",
+      "Billede 25.jpg",
+      "Design uden navn.png",
+      "815FF0E0-1E99-4ADB-A9B8-CAEA128FE786.jpeg",
+      "Billede 3.jpg",
+      "Billede 12.jpg",
+      "E8A74AAA-BC3E-4E53-BD97-0C2FDAFE7BF9.png",
+      "F00B416B-3D7C-4E73-B92D-5E91168524C8.jpeg",
+      "Billede 4.jpg",
+      "Skærmbillede 2025-06-19 kl. 16.46.58.png"
+    ];
+
+    const slideshow = document.getElementById('slideshow');
+    let currentIndex = 0;
+    let slides = [];
+    let timer = null;
+    const interval = 3000;
+
+    imageFiles.forEach((src, index) => {
+      const slide = document.createElement('div');
+      slide.classList.add('slide');
+      const img = document.createElement('img');
+      img.src = src;
+      slide.appendChild(img);
+      slideshow.appendChild(slide);
+      slides.push(slide);
+    });
+
+    function showSlide(index) {
+      slides.forEach(slide => slide.classList.remove('active'));
+      slides[index].classList.add('active');
+    }
+
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % slides.length;
+      showSlide(currentIndex);
+    }
+
+    function prevSlide() {
+      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+      showSlide(currentIndex);
+    }
+
+    function startSlideshow() {
+      document.getElementById('startOverlay').style.display = 'none';
+      showSlide(currentIndex);
+      timer = setInterval(nextSlide, interval);
+      enableWakeLock();
+    }
+
+    document.getElementById('startOverlay').addEventListener('click', startSlideshow);
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      clearInterval(timer);
+      prevSlide();
+    });
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      clearInterval(timer);
+      nextSlide();
+    });
+
+    // Wake lock (so the screen stays on)
+    let wakeLock = null;
+    async function enableWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLock = await navigator.wakeLock.request('screen');
+        }
+      } catch (err) {
+        console.error('WakeLock error:', err);
+      }
+    }
+
+    // Reapply wake lock if it is released
+    document.addEventListener('visibilitychange', () => {
+      if (wakeLock !== null && document.visibilityState === 'visible') {
+        enableWakeLock();
+      }
+    });
+  </script>
+</body>
+</html>
