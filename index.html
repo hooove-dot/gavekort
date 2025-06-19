@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Gavekort</title>
   <style>
     html, body {
@@ -11,68 +11,72 @@
       background-color: black;
       overflow: hidden;
       height: 100%;
+      font-family: sans-serif;
     }
-
-    #slideshow-container {
+    .slideshow-container {
       position: relative;
       width: 100vw;
       height: 100vh;
     }
-
     .slide {
       position: absolute;
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       opacity: 0;
       transition: opacity 1s ease;
     }
-
     .slide.active {
       opacity: 1;
       z-index: 1;
     }
-
-    .nav-btn {
+    .nav-button {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 2.5rem;
-      background: rgba(255,255,255,0.5);
+      background-color: rgba(0, 0, 0, 0.3);
+      color: white;
+      font-size: 3em;
       border: none;
-      padding: 0.2em 0.5em;
+      padding: 0.2em 0.4em;
       cursor: pointer;
       z-index: 2;
     }
-
-    #prevBtn { left: 10px; }
-    #nextBtn { right: 10px; }
-
-    #startOverlay {
+    .nav-button:hover {
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    .prev {
+      left: 10px;
+    }
+    .next {
+      right: 10px;
+    }
+    .start-overlay {
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.6);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(255, 255, 255, 0.5);
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 1.5em;
+      color: black;
       z-index: 3;
-      color: white;
-      font-size: 2rem;
-      font-family: sans-serif;
-      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div id="slideshow-container">
-    <div id="startOverlay" onclick="startSlideshow()">tryk for at starte</div>
-    <button class="nav-btn" id="prevBtn" onclick="prevSlide()">‹</button>
-    <button class="nav-btn" id="nextBtn" onclick="nextSlide()">›</button>
+  <div class="slideshow-container" onclick="startSlideshow()">
+    <img class="slide active" src="7ea4ee19-6395-4202-ad63-a472c00b4b9b.png" alt="Forside" />
+    <div class="start-overlay" id="startOverlay">tryk for at starte</div>
+
+    <!-- Navigation arrows -->
+    <button class="nav-button prev" onclick="prevSlide()">&#10094;</button>
+    <button class="nav-button next" onclick="nextSlide()">&#10095;</button>
   </div>
 
   <script>
-    const images = [
+    const imageFilenames = [
       "7ea4ee19-6395-4202-ad63-a472c00b4b9b.png", // forside
       "ChatGPT Image 19. jun. 2025, 16.31.57.png",
       "Billede 2.jpg",
@@ -92,69 +96,64 @@
       "Skærmbillede 2025-06-19 kl. 16.46.58.png"
     ];
 
-    const container = document.getElementById('slideshow-container');
-    let currentIndex = 0;
-    let slides = [];
-    let autoSlideInterval;
-    let wakeLock = null;
+    const container = document.querySelector(".slideshow-container");
+    const startOverlay = document.getElementById("startOverlay");
+    let currentSlide = 0;
+    let intervalId;
+    let started = false;
 
-    async function requestWakeLock() {
+    // Load remaining slides
+    for (let i = 1; i < imageFilenames.length; i++) {
+      const img = document.createElement("img");
+      img.className = "slide";
+      img.src = imageFilenames[i];
+      img.alt = `Slide ${i + 1}`;
+      container.appendChild(img);
+    }
+
+    const slides = document.querySelectorAll(".slide");
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.remove("active");
+        if (i === index) {
+          slide.classList.add("active");
+        }
+      });
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      showSlide(currentSlide);
+    }
+
+    function startSlideshow() {
+      if (started) return;
+      started = true;
+      startOverlay.style.display = "none";
+      nextSlide();
+      intervalId = setInterval(() => {
+        nextSlide();
+      }, 3000);
+      enableWakeLock();
+    }
+
+    // Prevent screen from going dark
+    let wakeLock = null;
+    async function enableWakeLock() {
       try {
         if ('wakeLock' in navigator) {
           wakeLock = await navigator.wakeLock.request('screen');
         }
       } catch (err) {
-        console.error(`${err.name}, ${err.message}`);
+        console.error(`WakeLock error: ${err.name}, ${err.message}`);
       }
     }
-
-    function preloadImages() {
-      images.forEach(src => {
-        const img = new Image();
-        img.src = src;
-      });
-    }
-
-    function setupSlides() {
-      images.forEach((src, index) => {
-        const img = document.createElement('img');
-        img.src = src;
-        img.className = 'slide';
-        if (index === 0) img.classList.add('active');
-        container.appendChild(img);
-        slides.push(img);
-      });
-    }
-
-    function showSlide(index) {
-      slides.forEach((slide, i) => {
-        slide.classList.toggle('active', i === index);
-      });
-      currentIndex = index;
-    }
-
-    function nextSlide() {
-      const nextIndex = (currentIndex + 1) % slides.length;
-      showSlide(nextIndex);
-    }
-
-    function prevSlide() {
-      const prevIndex = (currentIndex - 1 + slides.length) % slides.length;
-      showSlide(prevIndex);
-    }
-
-    function startSlideshow() {
-      document.getElementById('startOverlay').style.display = 'none';
-      requestWakeLock();
-      autoSlideInterval = setInterval(() => {
-        const nextImg = new Image();
-        nextImg.src = images[(currentIndex + 1) % slides.length];
-        nextImg.onload = () => nextSlide();
-      }, 3000);
-    }
-
-    preloadImages();
-    setupSlides();
   </script>
 </body>
 </html>
