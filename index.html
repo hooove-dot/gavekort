@@ -2,164 +2,162 @@
 <html lang="da">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gavekort</title>
   <style>
     html, body {
-  margin: 0;
-  padding: 0;
-  background-color: black;
-  overflow: hidden;
-  height: 100%;
-  font-family: sans-serif;
-}
-.slideshow-container {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-}
-.slide {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  opacity: 0;
-  transition: opacity 1s ease;
-}
-.slide.active {
-  opacity: 1;
-  z-index: 1;
-}
-.nav-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.2);
-  color: white;
-  font-size: 2.2em;
-  border: none;
-  border-radius: 50%;
-  padding: 0.2em 0.4em;
-  cursor: pointer;
-  z-index: 2;
-}
-.nav-button:hover {
-  background-color: rgba(0, 0, 0, 0.4);
-}
-.prev {
-  left: 12px;
-}
-.next {
-  right: 12px;
-  }
-.start-overlay {
-  position: absolute;
-  bottom: 5%;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(255, 255, 255, 0.4);
-  padding: 10px 16px;
-  border-radius: 12px;
-  font-size: 1.4em;
-  color: #222;
-  font-weight: 500;
-  z-index: 3;
-  text-align: center;
-  max-width: 90%;
-  line-height: 1.4em;
-  white-space: nowrap;
-}
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .slideshow-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+    }
+
+    .slide {
+      display: none;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transition: opacity 1s ease;
+    }
+
+    .slide.active {
+      display: block;
+      opacity: 1;
+      z-index: 1;
+    }
+
+    .slide.fade-out {
+      opacity: 0;
+      z-index: 0;
+    }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2.5em;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      padding: 10px;
+      z-index: 3;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .arrow.left {
+      left: 20px;
+    }
+
+    .arrow.right {
+      right: 20px;
+    }
+
+    .start-overlay {
+      position: absolute;
+      bottom: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(255, 255, 255, 0.5);
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 1.4em;
+      color: #000;
+      font-weight: bold;
+      z-index: 4;
+      text-align: center;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
-  <div class="slideshow-container" onclick="startSlideshow()">
-    <img class="slide active" src="7ea4ee19-6395-4202-ad63-a472c00b4b9b.png" alt="Forside" />
-    <div class="start-overlay" id="startOverlay">tryk for at starte</div>
 
-    <!-- Navigation arrows -->
-    <button class="nav-button prev" onclick="prevSlide()">&#10094;</button>
-    <button class="nav-button next" onclick="nextSlide()">&#10095;</button>
+  <div class="slideshow-container" id="slideshow">
+    <div class="slide active">
+      <img src="7ea4ee19-6395-4202-ad63-a472c00b4b9b.png" alt="Forside" />
+      <div class="start-overlay" id="startText">tryk for at starte</div>
+    </div>
+    <div class="slide"><img src="ChatGPT Image 19. jun. 2025, 16.31.57.png" /></div>
+    <div class="slide"><img src="Billede 2.jpg" /></div>
+    <div class="slide"><img src="Billede 23.jpg" /></div>
+    <div class="slide"><img src="f75d86de-b362-47a5-9e52-4ccb60d964ce.jpeg" /></div>
+    <div class="slide"><img src="Billede 24.jpg" /></div>
+    <div class="slide"><img src="Billede 20.jpg" /></div>
+    <div class="slide"><img src="fbb2e01b-6bf4-4859-9f85-418412b4abd0.jpg" /></div>
+    <div class="slide"><img src="Billede 25.jpg" /></div>
+    <div class="slide"><img src="Design uden navn.png" /></div>
+    <div class="slide"><img src="815FF0E0-1E99-4ADB-A9B8-CAEA128FE786.jpeg" /></div>
+    <div class="slide"><img src="Billede 3.jpg" /></div>
+    <div class="slide"><img src="Billede 12.jpg" /></div>
+    <div class="slide"><img src="E8A74AAA-BC3E-4E53-BD97-0C2FDAFE7BF9.png" /></div>
+    <div class="slide"><img src="F00B416B-3D7C-4E73-B92D-5E91168524C8.jpeg" /></div>
+    <div class="slide"><img src="Billede 4.jpg" /></div>
+    <div class="slide"><img src="Skærmbillede 2025-06-19 kl. 16.46.58.png" /></div>
+
+    <div class="arrow left" onclick="prevSlide()">&#10094;</div>
+    <div class="arrow right" onclick="nextSlide()">&#10095;</div>
   </div>
 
   <script>
-    const imageFilenames = [
-      "7ea4ee19-6395-4202-ad63-a472c00b4b9b.png", // forside
-      "ChatGPT Image 19. jun. 2025, 16.31.57.png",
-      "Billede 2.jpg",
-      "Billede 23.jpg",
-      "f75d86de-b362-47a5-9e52-4ccb60d964ce.jpeg",
-      "Billede 24.jpg",
-      "Billede 20.jpg",
-      "fbb2e01b-6bf4-4859-9f85-418412b4abd0.jpg",
-      "Billede 25.jpg",
-      "Design uden navn.png",
-      "815FF0E0-1E99-4ADB-A9B8-CAEA128FE786.jpeg",
-      "Billede 3.jpg",
-      "Billede 12.jpg",
-      "E8A74AAA-BC3E-4E53-BD97-0C2FDAFE7BF9.png",
-      "F00B416B-3D7C-4E73-B92D-5E91168524C8.jpeg",
-      "Billede 4.jpg",
-      "Skærmbillede 2025-06-19 kl. 16.46.58.png"
-    ];
+    let currentIndex = 0;
+    let slides = document.querySelectorAll(".slide");
+    let interval;
+    let hasStarted = false;
 
-    const container = document.querySelector(".slideshow-container");
-    const startOverlay = document.getElementById("startOverlay");
-    let currentSlide = 0;
-    let intervalId;
-    let started = false;
-
-    // Load remaining slides
-    for (let i = 1; i < imageFilenames.length; i++) {
-      const img = document.createElement("img");
-      img.className = "slide";
-      img.src = imageFilenames[i];
-      img.alt = `Slide ${i + 1}`;
-      container.appendChild(img);
+    async function enableWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          await navigator.wakeLock.request('screen');
+        }
+      } catch (err) {
+        console.warn("Wake lock not supported:", err);
+      }
     }
-
-    const slides = document.querySelectorAll(".slide");
 
     function showSlide(index) {
       slides.forEach((slide, i) => {
-        slide.classList.remove("active");
+        slide.classList.remove("active", "fade-out");
         if (i === index) {
           slide.classList.add("active");
+        } else {
+          slide.classList.add("fade-out");
         }
       });
     }
 
     function nextSlide() {
-      currentSlide = (currentSlide + 1) % slides.length;
-      showSlide(currentSlide);
+      currentIndex = (currentIndex + 1) % slides.length;
+      showSlide(currentIndex);
     }
 
     function prevSlide() {
-      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-      showSlide(currentSlide);
+      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+      showSlide(currentIndex);
     }
 
     function startSlideshow() {
-      if (started) return;
-      started = true;
-      startOverlay.style.display = "none";
-      nextSlide();
-      intervalId = setInterval(() => {
-        nextSlide();
-      }, 3000);
+      if (hasStarted) return;
+      hasStarted = true;
+      document.getElementById("startText").style.display = "none";
+      interval = setInterval(nextSlide, 3000);
       enableWakeLock();
     }
 
-    // Prevent screen from going dark
-    let wakeLock = null;
-    async function enableWakeLock() {
-      try {
-        if ('wakeLock' in navigator) {
-          wakeLock = await navigator.wakeLock.request('screen');
-        }
-      } catch (err) {
-        console.error(`WakeLock error: ${err.name}, ${err.message}`);
-      }
-    }
+    document.getElementById("slideshow").addEventListener("click", () => {
+      startSlideshow();
+    });
   </script>
 </body>
 </html>
