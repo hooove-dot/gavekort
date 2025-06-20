@@ -75,7 +75,7 @@
     /* —– Pause/Play-knap —– */
   .toggle {
   position: absolute;
-  bottom: 2rem;
+  bottom: 1rem;
   left: 50%;
   transform: translateX(-50%);
   padding: 0.5rem 0.75rem;
@@ -127,7 +127,8 @@
     const toggleBtn = document.getElementById('togglePlay');  // rettet: document
     const bgMusic   = document.getElementById('bg-music');
     let idx = 0, timer, isPlaying = false;                  // rettet: isPlaying initialiseret
-
+    let lastSlideTimer;
+    
     function showSlide(i) {
       slides[idx].classList.remove('active');
       idx = (i + slides.length) % slides.length;
@@ -138,6 +139,13 @@
       toggleBtn.style.display  = onFront ? 'none' : 'block';
       leftBtn.style.display    = onFront ? 'none' : 'block';
       rightBtn.style.display   = onFront ? 'none' : 'block';
+
+      clearTimeout(lastSlideTimer);
+      if (idx === slides.length - 1) {
+        lastSlideTimer = setTimeout(() => {
+          bgMusic.pause();
+          }, 3000);
+        }
     }
 
     function startAuto() {
