@@ -8,7 +8,7 @@
     /* 1. Default: alle slides (undtagen special) får 45% i Y */
 .slide {
   object-fit: contain;
-  object-position: 50% 50%;
+  object-position: 50% 35%;
   transition: opacity 1s ease;
 }
 
@@ -85,7 +85,7 @@
 <body><div class="slider">
 
   <!-- 1) Forside -->
-  <img src="forside.png"      class="slide special" alt="forside">
+  <img src="forside.png"      class="slide active special" alt="forside">
 
   <!-- 2-16) Resten i numerisk rækkefølge -->
   <img src="billede1.png"     class="slide special" alt="">
@@ -134,6 +134,14 @@
       function stopAuto() {
         clearInterval(timer);
       }
+      startText.addEventListener('click', () => {
+        startText.style.display ='none';
+        stopAuto ();
+
+        showSlide(idx + 1);
+
+        setTimeout(startAuto, 500);
+      });
 
       leftBtn .addEventListener('click', ()=>{ stopAuto(); showSlide(idx-1); startAuto(); });
       rightBtn.addEventListener('click', ()=>{ stopAuto(); showSlide(idx+1); startAuto(); });
