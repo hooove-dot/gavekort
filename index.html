@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>∞ Gavekort</title>
   <style>
+    /* 1. Default: alle slides (undtagen special) får 45% i Y */
+.slide {
+  object-fit: contain;
+  object-position: 50% 45%;
+  transition: opacity 1s ease;
+}
+
+/* 2. Special-slides (forside, billede1 og billede3) får helt centreret */
+.slide.special {
+  object-position: 50% 50%;
+}
+
     /* ——— NULSTIL & FULD SKÆRM ——— */
     * { margin:0; padding:0; box-sizing:border-box; }
     html, body {
@@ -45,7 +57,7 @@
       position:absolute;
       top:50%; transform:translateY(-50%);
       font-size:2rem;
-      background:rgba(255,255,255,0.6);
+      background:#F7EAD9(255,255,255,0.6);
       border:none; padding:0.5rem 1rem;
       border-radius:50%;
       cursor:pointer; user-select:none;
@@ -60,7 +72,7 @@
       /* flyt den 20% oppe fra bunden af skærmen */
       bottom:20%;
       left:50%; transform:translateX(-50%);
-      background:rgba(255,255,255,0.6);
+      background:#F7EAD9(255,255,255,0.6);
       padding:0.5rem 2rem;
       font-size:1.25rem;
       z-index:10;
@@ -71,12 +83,12 @@
 <body><div class="slider">
 
   <!-- 1) Forside -->
-  <img src="forside.png"      class="slide active" alt="forside">
+  <img src="forside.png"      class="slide special" alt="forside">
 
   <!-- 2-16) Resten i numerisk rækkefølge -->
-  <img src="billede1.png"     class="slide" alt="">
+  <img src="billede1.png"     class="slide special" alt="">
   <img src="Billede 2.jpg"     class="slide" alt="">
-  <img src="billede3.jpg"     class="slide" alt="">
+  <img src="billede3.jpg"     class="slide special" alt="">
   <img src="billede4.jpeg"    class="slide" alt="">
   <img src="billede5.jpg"     class="slide" alt="">
   <img src="billede6.jpg"     class="slide" alt="">
