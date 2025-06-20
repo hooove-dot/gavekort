@@ -5,91 +5,99 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>∞ Gavekort</title>
   <style>
-    /* —— Nulstil og fuldskærm —— */
+    /* ——— NULSTIL & FULD SKÆRM ——— */
     * { margin:0; padding:0; box-sizing:border-box; }
-    html, body { width:100%; height:100%; background:#000; overflow:hidden; font-family:Georgia, serif; }
+    html, body {
+      width:100%; height:100%;
+      background:#000;       /* sort baggrund mens slides loader */
+      font-family:Georgia, serif;
+      overflow:hidden;
+    }
 
-   /* ------------------------------------------------------------------ */
-/* SLIDE-STYLING: ALLE BILLEDER SKAL CONTAIN (ingen beskæring)          */
-/* ------------------------------------------------------------------ */
-.slide {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;    /* fylder hele browser‐bredde */
-  height: 100vh;   /* fylder hele browser‐højde */
-  
-  object-fit: contain;          /* viser hele billedet uden beskæring */
-  object-position: center;      /* centrerer billedet i boksen */
-  
-  /* baggrund så “letterbox” bjælkerne matcher papiret */
-  background-color: #F7EAD9;    
-  
-  /* fade‐overgang (justér 1s til fx 1.5s hvis du vil have langsommere) */
-  transition: opacity 1s ease;
-}
-*/
+    /* ——— SLIDER-KONTAINER ——— */
+    .slider {
+      position:relative;
+      width:100vw; height:100vh;
+      overflow:hidden;
+    }
 
-    /* —— Pilene —— */
+    /* ——— SLIDES: FULDBILLEDE + FADE ——— */
+    .slide {
+      position:absolute;
+      top:0; left:0;
+      width:100vw;  height:100vh;
+
+      /* object-fit: contain sikrer hele billedet vises */
+      object-fit:contain;
+      object-position:center;
+
+      /* farve på bjælker over/under billedet */
+      background-color:#F7EAD9;
+
+      opacity:0;
+      transition: opacity 1s ease;
+    }
+    .slide.active {
+      opacity:1;
+      z-index:1;
+    }
+
+    /* ——— PILENE ——— */
     .arrow {
       position:absolute;
-      top:50%;
-      transform:translateY(-50%);
+      top:50%; transform:translateY(-50%);
       font-size:2rem;
       background:rgba(255,255,255,0.6);
-      border:none;
-      padding:0.5rem 1rem;
+      border:none; padding:0.5rem 1rem;
       border-radius:50%;
-      cursor:pointer;
-      user-select:none;
+      cursor:pointer; user-select:none;
       z-index:10;
     }
     .arrow.left  { left:1rem; }
     .arrow.right { right:1rem; }
 
-    /* —— “tryk for at starte”—kun på forsiden—— */
+    /* ——— START-TEKST (kun forsiden) ——— */
     .start-text {
       position:absolute;
       bottom:5%;
-      left:50%;
-      transform:translateX(-50%);
-      padding:0.5rem 2rem;
+      left:50%; transform:translateX(-50%);
       background:rgba(255,255,255,0.6);
+      padding:0.5rem 2rem;
       font-size:1.25rem;
       z-index:10;
-      display:none;
+      display:none;        /* kun vises når slide.active er index 0 */
     }
   </style>
 </head>
-<body>
-  <div class="slider">
-    <!-- 1: Forside -->
-    <img src="forside.png" class="slide active" alt="forside">
-    <!-- 2+ i korrekt rækkefølge -->
-    <img src="billede1.png" class="slide" alt="">
-    <img src="Billede 2.jpg" class="slide" alt="">
-    <img src="billede3.jpg" class="slide" alt="">
-    <img src="billede4.jpeg" class="slide" alt="">
-    <img src="billede5.jpg" class="slide" alt="">
-    <img src="billede6.jpg" class="slide" alt="">
-    <img src="billede7.jpg" class="slide" alt="">
-    <img src="billede8.jpg" class="slide" alt="">
-    <img src="billede9.png" class="slide" alt="">
-    <img src="billede10.jpeg" class="slide" alt="">
-    <img src="billede11.jpg" class="slide" alt="">
-    <img src="billede12.jpg" class="slide" alt="">
-    <img src="billede13.png" class="slide" alt="">
-    <img src="billede14.jpeg" class="slide" alt="">
-    <img src="billede15.jpg" class="slide" alt="">
-    <img src="billede16.png" class="slide" alt="">
+<body><div class="slider">
 
-    <!-- Pile -->
-    <button class="arrow left">&lt;</button>
-    <button class="arrow right">&gt;</button>
+  <!-- 1) Forside -->
+  <img src="forside.png"      class="slide active" alt="forside">
 
-    <!-- Start-tekst (kun på forsiden!) -->
-    <div class="start-text">tryk for at starte</div>
-  </div>
+  <!-- 2-16) Resten i numerisk rækkefølge -->
+  <img src="billede1.png"     class="slide" alt="">
+  <img src="billede2.jpg"     class="slide" alt="">
+  <img src="billede3.jpg"     class="slide" alt="">
+  <img src="billede4.jpeg"    class="slide" alt="">
+  <img src="billede5.jpg"     class="slide" alt="">
+  <img src="billede6.jpg"     class="slide" alt="">
+  <img src="billede7.jpg"     class="slide" alt="">
+  <img src="billede8.jpg"     class="slide" alt="">
+  <img src="billede9.png"     class="slide" alt="">
+  <img src="billede10.jpeg"   class="slide" alt="">
+  <img src="billede11.jpg"    class="slide" alt="">
+  <img src="billede12.jpg"    class="slide" alt="">
+  <img src="billede13.png"    class="slide" alt="">
+  <img src="billede14.jpeg"   class="slide" alt="">
+  <img src="billede15.jpg"    class="slide" alt="">
+  <img src="billede16.png"    class="slide" alt="">
+
+  <!-- navigation og “tryk for at starte” som før -->
+  <button class="arrow left">&lt;</button>
+  <button class="arrow right">&gt;</button>
+  <div class="start-text">tryk for at starte</div>
+</div>
+
 
   <script>
     (function(){
@@ -99,28 +107,25 @@
       const startText = document.querySelector('.start-text');
       let idx = 0, timer;
 
-      function showSlide(i) {
-        // fjern aktiv fra gammel
+      function showSlide(toIndex) {
         slides[idx].classList.remove('active');
-        // nyt indeks
-        idx = (i + slides.length) % slides.length;
-        // sæt aktiv på nyt
+        idx = (toIndex + slides.length) % slides.length;
         slides[idx].classList.add('active');
-        // kun vis “tryk for at starte” hvis idx===0
-        startText.style.display = (idx === 0 ? 'block' : 'none');
+        // Kun vis start-tekst på forsiden (index 0)
+        startText.style.display = idx===0 ? 'block' : 'none';
       }
 
       function startAuto() {
-        timer = setInterval(() => showSlide(idx + 1), 3000);
+        timer = setInterval(()=> showSlide(idx+1), 3000);
       }
       function stopAuto() {
         clearInterval(timer);
       }
 
-      leftBtn .addEventListener('click', () => { stopAuto(); showSlide(idx - 1); startAuto(); });
-      rightBtn.addEventListener('click', () => { stopAuto(); showSlide(idx + 1); startAuto(); });
+      leftBtn .addEventListener('click', ()=>{ stopAuto(); showSlide(idx-1); startAuto(); });
+      rightBtn.addEventListener('click', ()=>{ stopAuto(); showSlide(idx+1); startAuto(); });
 
-      // init
+      // Init
       showSlide(0);
       startAuto();
     })();
