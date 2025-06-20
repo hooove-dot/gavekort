@@ -9,7 +9,7 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     html, body {
       width:100%; height:100%;
-      background:#000;       /* sort baggrund mens slides loader */
+      background: #F7EAD9;
       font-family:Georgia, serif;
       overflow:hidden;
     }
@@ -29,6 +29,7 @@
 
       /* object-fit: contain sikrer hele billedet vises */
       object-fit:contain;
+      /* sørg for to værdier: horisontalt midt + vertikal midt */
       object-position:center;
 
       /* farve på bjælker over/under billedet */
@@ -59,7 +60,8 @@
     /* ——— START-TEKST (kun forsiden) ——— */
     .start-text {
       position:absolute;
-      bottom:5%;
+      /* flyt den 15% oppe fra bunden af skærmen */
+      bottom:15%;
       left:50%; transform:translateX(-50%);
       background:rgba(255,255,255,0.6);
       padding:0.5rem 2rem;
