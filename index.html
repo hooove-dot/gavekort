@@ -76,6 +76,19 @@
       display:none;          /* kun på forsiden */
       cursor:pointer;
     }
+     /* —– toggle-knap —– */
+    .toggle {
+      position:absolute;
+      bottom: 10%;
+      right: 1rem;
+      padding: 0,5rem 1rem;
+      background:transparent;
+      color: RGB(210,180,140);
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      z-index: 10;
+    }
   </style>
 </head>
 <body>
@@ -107,6 +120,8 @@
     <!-- Navigation -->
     <button class="arrow left">&#8249;</button>
     <button class="arrow right">&#8250;</button>
+    <!--Pause/Play-knap-->
+    <button id="toggleplay" class="toggle">Pause</button>
     <!-- Start-knap -->
     <div class="start-text">start</div>
   </div>
@@ -117,7 +132,9 @@
     const leftBtn   = document.querySelector('.arrow.left');
     const rightBtn  = document.querySelector('.arrow.right');
     const startText = document.querySelector('.start-text');
-    let idx = 0, timer;
+    const toggleBtn = dokument.getElementByid('toggleplay');
+    const bgMusic = document.getElementById('bg-music');
+    let idx = 0, timer; isPlaying = false;
 
     function showSlide(i) {
       slides[idx].classList.remove('active');
@@ -128,13 +145,21 @@
       const displayArrows = idx===0 ? 'none' : 'block';
       leftBtn.style.display = displayArrows;
       rightBtn.style.display = displayArrows;
+      toggleBtn.style.display = idx===0 ? 'none' : 'block';
     }
 
     function startAuto() {
+      if (isPlaying) return;
+      isPlaytin = true;
+      toggleBtn.textContent = 'Pause';
+      bgMusic.play().catch(()=>{/*Ignorer blokeringer*/});
       timer = setInterval(()=> showSlide(idx+1), 5000);
     }
     function stopAuto() {
+      isPlaying = false;
       clearInterval(timer);
+      toggleBtn.textContent = 'Start';
+      bgMusic.pause();
     }
 
     // Klik på start-teksten:
@@ -158,8 +183,16 @@
       startAuto();
     });
 
+    toggleBtn.addEventListener('click',() => {
+      if (isPlaying) stopAuto ();
+      else startAuto();
+     }); 
     // Init: vis kun forsiden og dens tekst
     showSlide(0);
+
+    //Stop musikken når siden lukkes/navigeres væk
+    window.addEventListener('beforeunload',() => {
+      bgMusic.pause();
 
     // WakeLock‐funktion
     async function enableWakeLock() {
