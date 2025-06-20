@@ -36,11 +36,11 @@
     /* ——— SLIDES: FULDBILLEDE + FADE ——— */
     .slide {
       position:absolute;
-      top:0; left:0;
-      width:100vw;  height:100vh;
+      top:5vh; left:0;
+      width:100vw;  height:90vh;
 
       object-fit:contain;
-      object-position:50% 80%;
+      object-position:50% 50%;
 
       background-color:#F7EAD9;
 
@@ -71,7 +71,7 @@
     .start-text {
       position:absolute;
       /* flyt den 20% oppe fra bunden af skærmen */
-      bottom:25%;
+      bottom:23%;
       left:50%; transform:translateX(-50%);
       background: transparent
       color: #rgba (255,255,255, 0.6);
@@ -142,8 +142,20 @@
       showSlide(0);
       startText.addEventListener ('click', () => {
         startText.style.display = 'none';
-        startAuto ( ); 
-    });  
+        startAuto (); 
+        enableWakeLock();
+    });
+      async function enableWakeLock ( ) {
+        try {
+          if ('wakeLock' in navigator) {
+            const lock = await navigator.wakeLock.request ('screen');
+            lock.addEventListener ('release', () => enableWakeLock ());
+          }
+        } catch (err) {
+          console.warn ('WakeLock fejlede:', err); 
+        }
+      }
+   
     })();
   </script>
 </body>
