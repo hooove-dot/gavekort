@@ -101,33 +101,40 @@
   </div>
 
   <script>
-    (() => {
-      const slides = Array.from(document.querySelectorAll('.slide'));
-      const leftBtn = document.querySelector('.arrow.left');
-      const rightBtn= document.querySelector('.arrow.right');
-      let idx = 0, timer;
+    (function(){
+  const slides    = Array.from(document.querySelectorAll('.slide'));
+  const leftBtn   = document.querySelector('.arrow.left');
+  const rightBtn  = document.querySelector('.arrow.right');
+  const startText = document.querySelector('.start-text');
+  let idx = 0, timer;
 
-      function showSlide(i) {
-        slides[idx].classList.remove('active');
-        idx = (i + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-      }
+  function showSlide(i) {
+    // fjern aktiv fra det gamle slide
+    slides[idx].classList.remove('active');
+    // regn nyt indeks
+    idx = (i + slides.length) % slides.length;
+    // giv det nye slide klassen active
+    slides[idx].classList.add('active');
 
-      // Autoplay hver 3s
-      function startAuto() {
-        timer = setInterval(() => showSlide(idx+1), 3000);
-      }
-      function stopAuto() {
-        clearInterval(timer);
-      }
+    // VIS kun teksten hvis det er forside (idx===0), ellers gem
+    startText.style.display = (idx === 0 ? 'block' : 'none');
+  }
 
-      // Pile
-      leftBtn .addEventListener('click', () => { stopAuto(); showSlide(idx-1); startAuto(); });
-      rightBtn.addEventListener('click', () => { stopAuto(); showSlide(idx+1); startAuto(); });
+  function startAuto() {
+    timer = setInterval(() => showSlide(idx + 1), 3000);
+  }
+  function stopAuto() {
+    clearInterval(timer);
+  }
 
-      // Kickstart
-      startAuto();
-    })();
+  leftBtn .addEventListener('click', () => { stopAuto(); showSlide(idx - 1); startAuto(); });
+  rightBtn.addEventListener('click', () => { stopAuto(); showSlide(idx + 1); startAuto(); });
+
+  // start på forsiden og vis teksten
+  showSlide(0);
+  startAuto();
+})();
+
   </script>
 </body>
 </html>
