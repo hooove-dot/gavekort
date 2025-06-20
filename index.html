@@ -9,27 +9,26 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     html, body { width:100%; height:100%; background:#000; overflow:hidden; font-family:Georgia, serif; }
 
-    /* —— Slider-container —— */
-    .slider {
-      position:relative;
-      width:100vw;
-      height:100vh;
-      overflow:hidden;
-    }
-
-    /* —— Hvert slide (billede) —— */
-    .slide {
-      position:absolute;
-      top:0; left:0;
-      width:100%; height:100%;
-      opacity:0;
-      transition: opacity 1s ease;
-      object-fit:cover;
-    }
-    .slide.active {
-      opacity:1;
-      z-index:1;
-    }
+   /* ------------------------------------------------------------------ */
+/* SLIDE-STYLING: ALLE BILLEDER SKAL CONTAIN (ingen beskæring)          */
+/* ------------------------------------------------------------------ */
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;    /* fylder hele browser‐bredde */
+  height: 100vh;   /* fylder hele browser‐højde */
+  
+  object-fit: contain;          /* viser hele billedet uden beskæring */
+  object-position: center;      /* centrerer billedet i boksen */
+  
+  /* baggrund så “letterbox” bjælkerne matcher papiret */
+  background-color: #F7EAD9;    
+  
+  /* fade‐overgang (justér 1s til fx 1.5s hvis du vil have langsommere) */
+  transition: opacity 1s ease;
+}
+*/
 
     /* —— Pilene —— */
     .arrow {
