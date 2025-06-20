@@ -2,169 +2,168 @@
 <html lang="da">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>∞ Gavekort</title>
   <style>
-    /* 1. Default: alle slides (undtagen special) får 45% i Y */
-.slide {
-  object-fit: contain;
-  object-position: 50% 35%;
-  transition: opacity 1s ease;
-}
-
-/* 2. Special-slides (forside, billede1 og billede3) får helt centreret */
-.slide.special {
-  object-position: 50% 50%;
-}
-
-    /* ——— NULSTIL & FULD SKÆRM ——— */
+    /* —– Nulstil + fuldskærm —– */
     * { margin:0; padding:0; box-sizing:border-box; }
     html, body {
       width:100%; height:100%;
-      background: #F7EAD9;
+      background:#F7EAD9;
       font-family:Georgia, serif;
       overflow:hidden;
     }
 
-    /* ——— SLIDER-KONTAINER ——— */
+    /* —– Slider container —– */
     .slider {
       position:relative;
       width:100vw; height:100vh;
       overflow:hidden;
     }
 
-    /* ——— SLIDES: FULDBILLEDE + FADE ——— */
+    /* —– Slides: fullbillede + fade —– */
     .slide {
       position:absolute;
       top:5vh; left:0;
-      width:100vw;  height:90vh;
+      width:100vw; height:90vh;
 
       object-fit:contain;
-      object-position:50% 50%;
+      object-position:50% 53%;      /* default: lidt over midten */
 
       background-color:#F7EAD9;
 
       opacity:0;
-      transition: opacity 1s ease;
+      transition:opacity 1s ease;
     }
     .slide.active {
       opacity:1;
       z-index:1;
     }
 
-    /* ——— PILENE ——— */
+    /* —– Special slides: løftes en smule —– */
+    .slide.special {
+      object-position:50% 47% !important;
+    }
+
+    /* —– Pile —– */
     .arrow {
       position:absolute;
       top:50%; transform:translateY(-50%);
       font-size:2rem;
-      background: transparent;
-      color: rgba (255,255,0.8);
-      border:none; padding:0.5rem 1rem;
+      background:rgba(255,255,255,0.6);
+      border:none;
+      padding:0.5rem 1rem;
       border-radius:50%;
-      cursor:pointer; user-select:none;
+      cursor:pointer;
+      user-select:none;
       z-index:10;
     }
     .arrow.left  { left:1rem; }
     .arrow.right { right:1rem; }
 
-    /* ——— START-TEKST (kun forsiden) ——— */
+    /* —– “Tryk for at starte” —– */
     .start-text {
       position:absolute;
-      /* flyt den 20% oppe fra bunden af skærmen */
-      bottom:23%;
+      bottom:23%;            /* 23% oppe fra bunden */
       left:50%; transform:translateX(-50%);
-      background: transparent
-      color: #rgba (255,255,255, 0.6);
       padding:0.5rem 2rem;
+      background:rgba(255,255,255,0.6);
       font-size:1.25rem;
       z-index:10;
-      display:none;        /* kun vises når slide.active er index 0 */
+      display:none;          /* kun på forsiden */
+      cursor:pointer;
     }
   </style>
 </head>
-<body><div class="slider">
+<body>
+  <div class="slider">
+    <!-- 1) Forside -->
+    <img src="forside.png"   class="slide active special" alt="forside">
+    <!-- 2) Billede 1 -->
+    <img src="billede1.png"  class="slide special"       alt="">
+    <!-- 3) Billede 2 -->
+    <img src="Billede 2.jpg" class="slide"               alt="">
+    <!-- 4) Billede 3 -->
+    <img src="billede3.jpg"  class="slide special"       alt="">
+    <!-- Resten -->
+    <img src="billede4.jpeg"  class="slide" alt="">
+    <img src="billede5.jpg"   class="slide" alt="">
+    <img src="billede6.jpg"   class="slide" alt="">
+    <img src="billede7.jpg"   class="slide" alt="">
+    <img src="billede8.jpg"   class="slide" alt="">
+    <img src="billede9.png"   class="slide" alt="">
+    <img src="billede10.jpeg" class="slide" alt="">
+    <img src="billede11.jpg"  class="slide" alt="">
+    <img src="billede12.jpg"  class="slide" alt="">
+    <img src="billede13.png"  class="slide" alt="">
+    <img src="billede14.jpeg" class="slide" alt="">
+    <img src="billede15.jpg"  class="slide" alt="">
+    <img src="billede16.png"  class="slide" alt="">
 
-  <!-- 1) Forside -->
-  <img src="forside.png"      class="slide active special" alt="forside">
-
-  <!-- 2-16) Resten i numerisk rækkefølge -->
-  <img src="billede1.png"     class="slide special" alt="">
-  <img src="Billede 2.jpg"     class="slide" alt="">
-  <img src="billede3.jpg"     class="slide special" alt="">
-  <img src="billede4.jpeg"    class="slide" alt="">
-  <img src="billede5.jpg"     class="slide" alt="">
-  <img src="billede6.jpg"     class="slide" alt="">
-  <img src="billede7.jpg"     class="slide" alt="">
-  <img src="billede8.jpg"     class="slide" alt="">
-  <img src="billede9.png"     class="slide" alt="">
-  <img src="billede10.jpeg"   class="slide" alt="">
-  <img src="billede11.jpg"    class="slide" alt="">
-  <img src="billede12.jpg"    class="slide" alt="">
-  <img src="billede13.png"    class="slide" alt="">
-  <img src="billede14.jpeg"   class="slide" alt="">
-  <img src="billede15.jpg"    class="slide" alt="">
-  <img src="billede16.png"    class="slide" alt="">
-
-  <!-- navigation og “tryk for at starte” som før -->
-  <button class="arrow left">&lt;</button>
-  <button class="arrow right">&gt;</button>
-  <div class="start-text">start</div>
-</div>
-
+    <!-- Navigation -->
+    <button class="arrow left">&lt;</button>
+    <button class="arrow right">&gt;</button>
+    <!-- Start-knap -->
+    <div class="start-text">tryk for at starte</div>
+  </div>
 
   <script>
-    (function(){
-      const slides    = Array.from(document.querySelectorAll('.slide'));
-      const leftBtn   = document.querySelector('.arrow.left');
-      const rightBtn  = document.querySelector('.arrow.right');
-      const startText = document.querySelector('.start-text');
-      let idx = 0, timer;
+  (function(){
+    const slides    = Array.from(document.querySelectorAll('.slide'));
+    const leftBtn   = document.querySelector('.arrow.left');
+    const rightBtn  = document.querySelector('.arrow.right');
+    const startText = document.querySelector('.start-text');
+    let idx = 0, timer;
 
-      function showSlide(toIndex) {
-        slides[idx].classList.remove('active');
-        idx = (toIndex + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        // Kun vis start-tekst på forsiden (index 0)
-        startText.style.display = idx===0 ? 'block' : 'none';
-      }
+    function showSlide(i) {
+      slides[idx].classList.remove('active');
+      idx = (i + slides.length) % slides.length;
+      slides[idx].classList.add('active');
+      // Vis “tryk for at starte” kun på forsiden (idx===0)
+      startText.style.display = idx===0 ? 'block' : 'none';
+    }
 
-      function startAuto() {
-        timer = setInterval(()=> showSlide(idx+1), 3000);
-      }
-      function stopAuto() {
-        clearInterval(timer);
-      }
-      startText.addEventListener('click', () => {
-        startText.style.display ='none';
-        stopAuto ();
+    function startAuto() {
+      timer = setInterval(()=> showSlide(idx+1), 3000);
+    }
+    function stopAuto() {
+      clearInterval(timer);
+    }
 
-        showSlide(idx + 1);
-
-        setTimeout(startAuto, 500);
-      });
-
-      leftBtn .addEventListener('click', ()=>{ stopAuto(); showSlide(idx-1); startAuto(); });
-      rightBtn.addEventListener('click', ()=>{ stopAuto(); showSlide(idx+1); startAuto(); });
-
-      // Init
-      showSlide(0);
-      startText.addEventListener ('click', () => {
-        startText.style.display = 'none';
-        startAuto (); 
-        enableWakeLock();
+    // Klik på start-teksten:
+    startText.addEventListener('click', () => {
+      startText.style.display = 'none';
+      showSlide(1);               // hop direkte til slide #1
+      enableWakeLock();           // våge­lås
+      setTimeout(startAuto, 500); // start auto efter 0.5s
     });
-      async function enableWakeLock ( ) {
-        try {
-          if ('wakeLock' in navigator) {
-            const lock = await navigator.wakeLock.request ('screen');
-            lock.addEventListener ('release', () => enableWakeLock ());
-          }
-        } catch (err) {
-          console.warn ('WakeLock fejlede:', err); 
+
+    leftBtn.addEventListener('click', ()=> {
+      stopAuto();
+      showSlide(idx-1);
+      startAuto();
+    });
+    rightBtn.addEventListener('click', ()=> {
+      stopAuto();
+      showSlide(idx+1);
+      startAuto();
+    });
+
+    // Init: vis kun forsiden og dens tekst
+    showSlide(0);
+
+    // WakeLock‐funktion
+    async function enableWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          const lock = await navigator.wakeLock.request('screen');
+          lock.addEventListener('release', () => enableWakeLock());
         }
+      } catch(err) {
+        console.warn('WakeLock fejlede:', err);
       }
-   
-    })();
+    }
+  })();
   </script>
 </body>
 </html>
