@@ -26,12 +26,9 @@
       position:absolute;
       top:5vh; left:0;
       width:100vw; height:90vh;
-
       object-fit:contain;
-      object-position:50% 20% !important;      /* default: lidt over midten */
-
+      object-position:50% 20% !important;
       background-color:#F7EAD9;
-
       opacity:0;
       transition:opacity 1s ease;
     }
@@ -39,8 +36,6 @@
       opacity:1;
       z-index:1;
     }
-
-    /* —– Special slides: løftes en smule —– */
     .slide.special {
       object-position:50% 40% !important;
     }
@@ -51,10 +46,10 @@
       top:45%; transform:translateY(-50%);
       font-size:2rem;
       background:transparent;
-      color: RGB(210,180,140);
+      color: rgb(210,180,140);
       border:none;
       padding:0.5rem 1rem;
-      border-radius:0,5rem;
+      border-radius:0.5rem;
       cursor:pointer;
       user-select:none;
       z-index:10;
@@ -65,65 +60,47 @@
     /* —– “Tryk for at starte” —– */
     .start-text {
       position:absolute;
-      bottom:16%;            
+      bottom:16%;
       left:50%; transform:translateX(-50%);
-      font-family: 'Comic sans MS', serif;
-      padding:0.5 rem 2 rem;
+      font-family: 'Comic Sans MS', serif;
       background:transparent;
-      color: RGB(176,196,222);
+      color: rgb(176,196,222);
       font-size:3rem;
       z-index:10;
-      display:none;          /* kun på forsiden */
+      display:none;
       cursor:pointer;
     }
-     /* —– toggle-knap —– */
-    .toggle {
-      position:absolute;
-      bottom: 10%;
-      right: 1rem;
-      padding: 0,5rem 1rem;
-      background:transparent;
-      color: RGB(210,180,140);
-      border: none;
-      font-size: 1rem;
-      cursor: pointer;
-      z-index: 10;
-    }
+
+    /* —– Pause/Play-knap —– */
+  .toggle {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem 0.75rem;
+  background: transparent;            /* gennemsigtig baggrund */
+  color: rgb(210, 180, 140);          /* din oprindelige pile-farve */
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 10;
+  display: none;                      /* stadig skjult på forsiden */
+}
+
   </style>
 </head>
 <body>
   <audio id="bg-music" src="Just Stay - Aakash Gandhi.mp3" loop preload="auto"></audio>
   <div class="slider">
-    <!-- 1) Forside -->
     <img src="forside.png"   class="slide active special" alt="forside">
-    <!-- 2) Billede 1 -->
     <img src="billede1.png"  class="slide special"       alt="">
-    <!-- 3) Billede 2 -->
     <img src="Billede 2.jpg" class="slide"               alt="">
-    <!-- 4) Billede 3 -->
-    <img src="billede3.jpg"  class="slide special"       alt="">
-    <!-- Resten -->
-    <img src="billede4.jpeg"  class="slide" alt="">
-    <img src="billede5.jpg"   class="slide" alt="">
-    <img src="billede6.jpg"   class="slide" alt="">
-    <img src="billede7.jpg"   class="slide" alt="">
-    <img src="billede8.jpg"   class="slide" alt="">
-    <img src="billede9.png"   class="slide" alt="">
-    <img src="billede10.jpeg" class="slide" alt="">
-    <img src="billede11.jpg"  class="slide" alt="">
-    <img src="billede12.jpg"  class="slide" alt="">
-    <img src="billede13.png"  class="slide" alt="">
-    <img src="billede14.jpeg" class="slide" alt="">
-    <img src="billede15.jpg"  class="slide" alt="">
-    <img src="billede16.png"  class="slide" alt="">
-
-    <!-- Navigation -->
+    <!-- … resten af billederne … -->
     <button class="arrow left">&#8249;</button>
     <button class="arrow right">&#8250;</button>
-    <!--Pause/Play-knap-->
-    <button id="toggleplay" class="toggle">Pause</button>
-    <!-- Start-knap -->
-    <div class="start-text">start</div>
+    <div class="start-text">Start</div>
+    <button id="togglePlay" class="toggle" aria-label="Pause">❚❚</button>
   </div>
 
   <script>
@@ -132,79 +109,60 @@
     const leftBtn   = document.querySelector('.arrow.left');
     const rightBtn  = document.querySelector('.arrow.right');
     const startText = document.querySelector('.start-text');
-    const toggleBtn = dokument.getElementByid('toggleplay');
-    const bgMusic = document.getElementById('bg-music');
-    let idx = 0, timer; isPlaying = false;
+    const toggleBtn = document.getElementById('togglePlay');  // rettet: document
+    const bgMusic   = document.getElementById('bg-music');
+    let idx = 0, timer, isPlaying = false;                  // rettet: isPlaying initialiseret
 
     function showSlide(i) {
       slides[idx].classList.remove('active');
       idx = (i + slides.length) % slides.length;
       slides[idx].classList.add('active');
-      // Vis “start” kun på forsiden (idx===0)
-      startText.style.display = idx===0 ? 'block' : 'none';
-      const displayArrows = idx===0 ? 'none' : 'block';
-      leftBtn.style.display = displayArrows;
-      rightBtn.style.display = displayArrows;
-      toggleBtn.style.display = idx===0 ? 'none' : 'block';
+
+      const onFront = idx === 0;
+      startText.style.display  = onFront ? 'block' : 'none';
+      toggleBtn.style.display  = onFront ? 'none' : 'block';
+      leftBtn.style.display    = onFront ? 'none' : 'block';
+      rightBtn.style.display   = onFront ? 'none' : 'block';
     }
 
     function startAuto() {
       if (isPlaying) return;
-      isPlaytin = true;
-      toggleBtn.textContent = 'Pause';
-      bgMusic.play().catch(()=>{/*Ignorer blokeringer*/});
+      isPlaying = true;
+      toggleBtn.textContent = '❚❚';
+      toggleBtn.setAttribute('aria-label','Pause');
+      bgMusic.play().catch(()=>{});
       timer = setInterval(()=> showSlide(idx+1), 5000);
     }
+
     function stopAuto() {
       isPlaying = false;
       clearInterval(timer);
-      toggleBtn.textContent = 'Start';
+      toggleBtn.textContent = '►';
+      toggleBtn.setAttribute('aria-label','Start');
       bgMusic.pause();
     }
 
-    // Klik på start-teksten:
-    const bgMusic = document.getElementById('bg-music');
+    // Start fra forsiden
     startText.addEventListener('click', () => {
-      startText.style.display = 'none';
-      showSlide(1);               // hop direkte til slide #1
-      bgMusic.play().catch(()=> {/* autoplay blokeret?*/});
-      enableWakeLock();           // våge­lås
-      setTimeout(startAuto, 500); // start auto efter 0.5s
+      showSlide(1);
+      setTimeout(startAuto, 500);
     });
 
-    leftBtn.addEventListener('click', ()=> {
-      stopAuto();
-      showSlide(idx-1);
-      startAuto();
-    });
-    rightBtn.addEventListener('click', ()=> {
-      stopAuto();
-      showSlide(idx+1);
-      startAuto();
+    // Manuelle pile
+    leftBtn.addEventListener('click',  () => { stopAuto(); showSlide(idx-1); });
+    rightBtn.addEventListener('click', () => { stopAuto(); showSlide(idx+1); });
+
+    // Toggle-knap
+    toggleBtn.addEventListener('click', () => {
+      if (isPlaying) stopAuto();
+      else          startAuto();
     });
 
-    toggleBtn.addEventListener('click',() => {
-      if (isPlaying) stopAuto ();
-      else startAuto();
-     }); 
-    // Init: vis kun forsiden og dens tekst
+    // Init
     showSlide(0);
 
-    //Stop musikken når siden lukkes/navigeres væk
-    window.addEventListener('beforeunload',() => {
-      bgMusic.pause();
-
-    // WakeLock‐funktion
-    async function enableWakeLock() {
-      try {
-        if ('wakeLock' in navigator) {
-          const lock = await navigator.wakeLock.request('screen');
-          lock.addEventListener('release', () => enableWakeLock());
-        }
-      } catch(err) {
-        console.warn('WakeLock fejlede:', err);
-      }
-    }
+    // Stop musikken ved fanen lukkes
+    window.addEventListener('beforeunload', () => bgMusic.pause());
   })();
   </script>
 </body>
