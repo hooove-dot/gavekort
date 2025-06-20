@@ -67,7 +67,8 @@
       bottom:23%;            /* 23% oppe fra bunden */
       left:50%; transform:translateX(-50%);
       padding:0.5rem 2rem;
-      background:rgba(255,255,255,0.6);
+      background:transparent
+      color: rgba(255,255,255,0.6);
       font-size:1.25rem;
       z-index:10;
       display:none;          /* kun på forsiden */
@@ -104,7 +105,7 @@
     <button class="arrow left">&lt;</button>
     <button class="arrow right">&gt;</button>
     <!-- Start-knap -->
-    <div class="start-text">tryk for at starte</div>
+    <div class="start-text">start</div>
   </div>
 
   <script>
@@ -119,7 +120,7 @@
       slides[idx].classList.remove('active');
       idx = (i + slides.length) % slides.length;
       slides[idx].classList.add('active');
-      // Vis “tryk for at starte” kun på forsiden (idx===0)
+      // Vis “start” kun på forsiden (idx===0)
       startText.style.display = idx===0 ? 'block' : 'none';
     }
 
