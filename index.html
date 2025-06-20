@@ -1,71 +1,79 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>gavekort</title>
+  <title>Gavekort</title>
+
   <style>
-    /* nulstil */
+    /* ------------- RESET & LAYOUT ------------- */
+    * { margin:0; padding:0; box-sizing:border-box; }
     html, body {
-      margin: 0; padding: 0;
-      width: 100%; height: 100%;
-      background-color: black;
-      overflow: hidden;
-      font-family: Georgia, serif;
+      width:100%; height:100%;
+      overflow:hidden; background:#fff;
+      font-family: 'Georgia', serif;
     }
-    /* slider-container */
     .slider {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      background-color: black;
+      position:relative;
+      width:100vw; height:100vh;
+      overflow:hidden;
     }
-    /* alle slides */
+
+    /* ------------- BILLEDER ------------- */
     .slide {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      opacity: 0;
-      object-fit: contain;
-      object-position: center;
-      transition: opacity 1s ease-in-out;
+      position:absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      object-position:center;
+      opacity:0;
+      transition: opacity 1s ease;
     }
     .slide.active {
-      opacity: 1;
-      z-index: 1;
+      opacity:1; z-index:1;
     }
-    /* pile */
-    .arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 2rem;
-      background-color: rgba(255,255,255,0.6);
-      border: none;
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      border-radius: 50%;
-      user-select: none;
-      z-index: 10;
+
+    /* Første slide (forside) skal contain så intet beskæres */
+    .slide:first-of-type {
+      object-fit:contain;
+      background:#fff;
     }
-    .arrow.left  { left: 1rem; }
-    .arrow.right { right: 1rem; }
-    /* start-tekst */
+    /* Øvrige slides også contain, så intet går tabt */
+    .slide:not(:first-of-type) {
+      object-fit:contain;
+      background:#fff;
+    }
+
+    /* ------------- START-TEXT ------------- */
     .start-text {
-      position: absolute;
-      bottom: 5%;
-      width: 100%;
-      text-align: center;
-      color: white;
-      font-size: 1.5rem;
-      pointer-events: none;
-      z-index: 5;
+      position:absolute;
+      bottom:5%;
+      width:100%;
+      text-align:center;
+      font-size:2rem;
+      color:#333;
+      z-index:5;
+      pointer-events:none;
     }
+
+    /* ------------- PIL-NAVIGATION ------------- */
+    .arrow {
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:2rem;
+      background:rgba(255,255,255,0.7);
+      border:none; border-radius:50%;
+      padding:0.5rem; cursor:pointer;
+      z-index:10;
+    }
+    .arrow.left  { left:1rem; }
+    .arrow.right { right:1rem; }
   </style>
 </head>
+
 <body>
   <div class="slider">
-    <!-- slides i korrekt rækkefølge -->
+    <!-- ------------- BILLEDRÆKKEFØLGE ------------- -->
     <img src="7ea4ee19-6395-4202-ad63-a472c00b4b9b.png" class="slide active" alt="forside">
     <img src="ChatGPT Image 19. jun. 2025, 16.31.57.png" class="slide" alt="">
     <img src="Billede 2.jpg" class="slide" alt="">
@@ -84,59 +92,41 @@
     <img src="Billede 4.jpg" class="slide" alt="">
     <img src="Skærmbillede 2025-06-19 kl. 16.46.58.png" class="slide" alt="">
 
-    <!-- pile -->
-    <button class="arrow left">&#8249;</button>
-    <button class="arrow right">&#8250;</button>
+    <!-- ------------- PIL-KNAP ------------- -->
+    <button class="arrow left">&#10094;</button>
+    <button class="arrow right">&#10095;</button>
 
-    <!-- start-tekst -->
+    <!-- ------------- START-TEXT ------------- -->
     <div class="start-text">tryk for at starte</div>
   </div>
 
   <script>
-    (function(){
+    (() => {
       const slides = Array.from(document.querySelectorAll('.slide'));
-      const left   = document.querySelector('.arrow.left');
-      const right  = document.querySelector('.arrow.right');
-      let   idx    = 0;
-      let   timer;
+      const leftBtn = document.querySelector('.arrow.left');
+      const rightBtn= document.querySelector('.arrow.right');
+      let idx = 0, timer;
 
-      function show(n){
+      function showSlide(i) {
         slides[idx].classList.remove('active');
-        idx = (n + slides.length) % slides.length;
+        idx = (i + slides.length) % slides.length;
         slides[idx].classList.add('active');
       }
 
-      function next(){
-        show(idx+1);
+      // Autoplay hver 3s
+      function startAuto() {
+        timer = setInterval(() => showSlide(idx+1), 3000);
       }
-      function prev(){
-        show(idx-1);
-      }
-
-      left.addEventListener('click', ()=>{
-        prev();
-        resetTimer();
-      });
-      right.addEventListener('click', ()=>{
-        next();
-        resetTimer();
-      });
-
-      function resetTimer(){
+      function stopAuto() {
         clearInterval(timer);
-        timer = setInterval(next, 3000);
       }
 
-      // start automatisk
-      timer = setInterval(next, 3000);
+      // Pile
+      leftBtn .addEventListener('click', () => { stopAuto(); showSlide(idx-1); startAuto(); });
+      rightBtn.addEventListener('click', () => { stopAuto(); showSlide(idx+1); startAuto(); });
 
-      // wakeLock (holder skærm tændt)
-      if ('wakeLock' in navigator) {
-        let wl = null;
-        navigator.wakeLock.request('screen')
-          .then(lock => wl = lock)
-          .catch(()=>{/*fungerer ikke her*/});
-      }
+      // Kickstart
+      startAuto();
     })();
   </script>
 </body>
