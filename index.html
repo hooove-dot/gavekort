@@ -79,6 +79,7 @@
   </style>
 </head>
 <body>
+  <audio id="bg-music" src="Just Stay - Aakash Gandhi.mp3" loop preload="auto"></audio>
   <div class="slider">
     <!-- 1) Forside -->
     <img src="forside.png"   class="slide active special" alt="forside">
@@ -137,9 +138,11 @@
     }
 
     // Klik på start-teksten:
+    const bgMusic = document.getElementById('bg-music');
     startText.addEventListener('click', () => {
       startText.style.display = 'none';
       showSlide(1);               // hop direkte til slide #1
+      bgMusic.play().catch(()=> {/* autoplay blokeret?*/});
       enableWakeLock();           // våge­lås
       setTimeout(startAuto, 500); // start auto efter 0.5s
     });
