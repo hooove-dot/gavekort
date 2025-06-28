@@ -9,7 +9,7 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     html, body {
       width:100%; height:100%;
-      background:#F7EAD9;
+      background:#000;
       font-family:Georgia, serif;
       overflow:hidden;
     }
@@ -28,7 +28,7 @@
       width:100vw; height:90vh;
       object-fit:contain;
       object-position:50% 20% !important;
-      background-color:#F7EAD9;
+      background-color:#000;
       opacity:0;
       transition:opacity 1s ease;
     }
@@ -85,7 +85,7 @@
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
-  z-index: 10;
+  z-index: 100;
   display: none;                      /* stadig skjult på forsiden */
 }
 
@@ -121,75 +121,113 @@
     <button id="togglePlay" class="toggle" aria-label="Pause">❚❚</button>
   </div>
 
-  <script>
-  (function(){
-    const slides    = Array.from(document.querySelectorAll('.slide'));
-    const leftBtn   = document.querySelector('.arrow.left');
-    const rightBtn  = document.querySelector('.arrow.right');
-    const startText = document.querySelector('.start-text');
-    const toggleBtn = document.getElementById('togglePlay');  // rettet: document
-    const bgMusic   = document.getElementById('bg-music');
-    let idx = 0, timer, isPlaying = false;                  // rettet: isPlaying initialiseret
-    let lastSlideTimer;
-    
-    function showSlide(i) {
-      slides[idx].classList.remove('active');
-      idx = (i + slides.length) % slides.length;
-      slides[idx].classList.add('active');
+ <script>
+(() => {
+  let firstShow = true;
+  const slides    = Array.from(document.querySelectorAll('.slide'));
+  const leftBtn   = document.querySelector('.arrow.left');
+  const rightBtn  = document.querySelector('.arrow.right');
+  const startText = document.querySelector('.start-text');
+  const toggleBtn = document.getElementById('togglePlay');
+  const bgMusic   = document.getElementById('bg-music');
 
-      const onFront = idx === 0;
-      startText.style.display  = onFront ? 'block' : 'none';
-      toggleBtn.style.display  = onFront ? 'none' : 'block';
-      leftBtn.style.display    = onFront ? 'none' : 'block';
-      rightBtn.style.display   = onFront ? 'none' : 'block';
+  let idx = 0;
+  let lastSlideTimer;
+  let nextTimer;
+  let isPlaying = false;
 
-      clearTimeout(lastSlideTimer);
-      if (idx === slides.length - 1) {
-        lastSlideTimer = setTimeout(() => {
-          bgMusic.pause();
-          }, 3000);
-        }
+  // Wake Lock API
+  let wakeLock = null;
+  async function requestWakeLock() {
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+    } catch (err) {
+      console.warn('Wake lock ikke tilgængelig:', err);
+    }
+  }
+  async function releaseWakeLock() {
+    if (wakeLock) {
+      await wakeLock.release();
+      wakeLock = null;
+    }
+  }
+
+  // Dynamiske varigheder pr. slide
+  const durations = slides.map((_, i) => {
+    // slide #1 = FørsteLeo (i=1) og næstsidste slide vises i 8s
+    return (i === 1 || i === slides.length - 2) ? 8000 : 5000;
+  });
+
+  function showSlide(i) {
+    // Skjul gammel
+    slides[idx].classList.remove('active');
+    // Beregn ny index
+    idx = (i + slides.length) % slides.length;
+    slides[idx].classList.add('active');
+
+    const onFront = idx === 0;
+    startText.style.display = onFront ? 'block' : 'none';
+    leftBtn.style.display   = onFront ? 'none'  : 'block';
+    rightBtn.style.display  = onFront ? 'none'  : 'block';
+
+    // Skjul toggle kun første gang på forside
+    if (firstShow && onFront) {
+      toggleBtn.style.display = 'none';
+      firstShow = false;
+    } else {
+      toggleBtn.style.display = 'block';
     }
 
-    function startAuto() {
-      if (isPlaying) return;
-      isPlaying = true;
-      toggleBtn.textContent = '❚❚';
-      toggleBtn.setAttribute('aria-label','Pause');
-      bgMusic.play().catch(()=>{});
-      timer = setInterval(()=> showSlide(idx+1), 5000);
+    // Pause musikken for end-siden efter 3s
+    clearTimeout(lastSlideTimer);
+    if (idx === slides.length - 1) {
+      lastSlideTimer = setTimeout(() => bgMusic.pause(), 3000);
     }
+  }
 
-    function stopAuto() {
-      isPlaying = false;
-      clearInterval(timer);
-      toggleBtn.textContent = '►';
-      toggleBtn.setAttribute('aria-label','Start');
-      bgMusic.pause();
-    }
+  function scheduleNext() {
+    clearTimeout(nextTimer);
+    nextTimer = setTimeout(() => {
+      showSlide(idx + 1);
+      scheduleNext();
+    }, durations[idx]);
+  }
 
-    // Start fra forsiden
-    startText.addEventListener('click', () => {
-      showSlide(1);
-      setTimeout(startAuto, 500);
-    });
+  async function startAuto() {
+    if (isPlaying) return;
+    isPlaying = true;
+    toggleBtn.textContent       = '❚❚';
+    toggleBtn.setAttribute('aria-label', 'Pause');
+    bgMusic.play().catch(() => {});
+    requestWakeLock();
+    scheduleNext();
+  }
 
-    // Manuelle pile
-    leftBtn.addEventListener('click',  () => { stopAuto(); showSlide(idx-1); });
-    rightBtn.addEventListener('click', () => { stopAuto(); showSlide(idx+1); });
+  async function stopAuto() {
+    if (!isPlaying) return;
+    isPlaying = false;
+    clearTimeout(nextTimer);
+    toggleBtn.textContent       = '►';
+    toggleBtn.setAttribute('aria-label', 'Start');
+    bgMusic.pause();
+    releaseWakeLock();
+  }
 
-    // Toggle-knap
-    toggleBtn.addEventListener('click', () => {
-      if (isPlaying) stopAuto();
-      else          startAuto();
-    });
+  // Event-listeners
+  startText.addEventListener('click', () => {
+    showSlide(1);
+    setTimeout(startAuto, 500);
+  });
+  leftBtn.addEventListener('click',  () => { stopAuto(); showSlide(idx - 1); });
+  rightBtn.addEventListener('click', () => { stopAuto(); showSlide(idx + 1); });
+  toggleBtn.addEventListener('click', () => {
+    isPlaying ? stopAuto() : startAuto();
+  });
 
-    // Init
-    showSlide(0);
-
-    // Stop musikken ved fanen lukkes
-    window.addEventListener('beforeunload', () => bgMusic.pause());
-  })();
-  </script>
+  // Init
+  showSlide(0);
+  window.addEventListener('beforeunload', () => bgMusic.pause());
+})();
+</script>
 </body>
 </html>
