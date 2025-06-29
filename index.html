@@ -41,7 +41,10 @@
       object-position:50% 40% !important;
     }
     .slide.center-it {
-      object-position:50% 50% !important;
+      top: 0 !important;
+      height: 100vh !important;
+      object-fit: cover !important;
+      object-position: center center !important; 
     }
 
     /* —– Pile —– */
@@ -97,7 +100,7 @@
   <script src="https://cdn.jsdelivr.net/npm/nosleep.js@0.12.0/dist/NoSleep.min.js"></script>
 </head>
 <body>
-  <audio id="bg-music" src="Phill Collins - You'll Be In My Heart (Tarzan).mp3" loop preload="auto"></audio>
+  <audio id="bg-music" src="Phill Collins - You'll Be In My Heart (Tarzan).mp3" preload="auto"></audio>
   <div class="slider">
     <img src="forside.png"   class="slide active special" alt="forside">
     <img src="FørsteLeo.png"  class="slide center-it"       alt="">
@@ -150,19 +153,21 @@
   
  // Fade-out funktion
   function fadeOutMusic(duration = 2000) {
-    const steps    = 20;
-    const stepTime = duration / steps;
-    const volStep  = bgMusic.volume / steps;
-    let current    = 0;
-    const iv = setInterval(() => {
-      if (++current >= steps) {
-        clearInterval(iv);
+    const frames    = 60;
+    const interval = duration / frames;
+    let current   = 0;
+
+    const FadeInterval = setInterval(() => {
+      current++;
+      const t = current / frames;
+      bgMusic.volume = Math.max(0, (1 - t) * (1 - t));
+
+      if (current >= frames) {
+        clearInterval(fadeInterval);
         bgMusic.pause();
         bgMusic.volume = 1;
-      } else {  
-        bgMusic.volume = Math.max(0, bgMusic.volume - volStep);
-      }  
-    }, stepTime);
+      }
+    }, interval);
   }
   
   // Dynamiske varigheder pr. slide
@@ -185,14 +190,12 @@
 
     //Start fade-out, så snart vi rammer næstsidste slide
     if (idx === slides.length - 2) {
-      // fade varigt over det antal milisekunder, vi viser slide #-2
-      fadeOutMusic(durations[idx]);
+      const totalFadeTime = durations[idx] + durations[idx + 1];
+      fadeOutMusic(totalFadeTime);
     }
       
     clearTimeout(lastSlideTimer);
     if (idx === slides.length - 1) {
-     // når vi er på sidste slide, er musikken allerede faded,
-    // så vi blot pauser helt og resetter volumen
       lastSlideTimer = setTimeout(() => {
         bgMusic.pause();
         bgMusic.volume = 1;
@@ -204,8 +207,6 @@
     clearTimeout(nextTimer);
     nextTimer = setTimeout(() => {
       if (idx === slides.length - 1) {
-        // fade ud på sidste slide - ingen loop
-        fadeOutMusic(2000);
         setTimeout(() => {
           showSlide(0);
           bgMusic.pause();
@@ -223,6 +224,7 @@
     isPlaying = true;
     toggleBtn.textContent       = '❚❚';
     toggleBtn.setAttribute('aria-label', 'Pause');
+    bgMusic.playbackRate = 0.85;
     bgMusic.play().catch(() => {});
     requestWakeLock();
     noSleep.enable();
@@ -238,6 +240,7 @@
     fadeOutMusic(2000);
     releaseWakeLock();
     noSleep.disable();
+    bgMusic.loop = false;
   }
   
   // Event-listeners
