@@ -168,7 +168,7 @@
   // Dynamiske varigheder pr. slide
   const durations = slides.map((_, i) => {
     if (i === 1)                       return 8000;   // FørsteLeo
-    else if (i === slides.length - 2)  return 12000;  // næstsidste slide
+    else if (i === slides.length - 2)  return 18000;  // næstsidste slide
     else                               return 5000;
   });
 
@@ -182,13 +182,23 @@
     leftBtn.style.display   = onFront ? 'none'  : 'block';
     rightBtn.style.display  = onFront ? 'none'  : 'block';
     toggleBtn.style.display = onFront ? 'none' : 'block';
-    console.log('slide', idx, 'toggle display =', toggleBtn.style.display);
 
+    //Start fade-out, så snart vi rammer næstsidste slide
+    if (idx === slides.length - 2) {
+      // fade varigt over det antal milisekunder, vi viser slide #-2
+      fadeOutMusic(durations[idx]);
+    }
+      
     clearTimeout(lastSlideTimer);
     if (idx === slides.length - 1) {
-      lastSlideTimer = setTimeout(() => fadeOutMusic(2000), durations[idx]);
-    }
+     // når vi er på sidste slide, er musikken allerede faded,
+    // så vi blot pauser helt og resetter volumen
+      lastSlideTimer = setTimeout(() => {
+        bgMusic.pause();
+        bgMusic.volume = 1;
+      },  durations[idx]);
   }
+}
   
   function scheduleNext() {
     clearTimeout(nextTimer);
