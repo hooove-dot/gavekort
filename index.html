@@ -29,7 +29,7 @@
       width:100vw; height:90vh;
       object-fit:contain;
       object-position:50% 20% !important;
-      background-color: #faf0e6; !important;
+      background-color: #faf0e6 !important;
       opacity:0;
       transition:opacity 1s ease;
     }
@@ -85,15 +85,16 @@
   padding: 0.5rem 0.75rem;
   background: transparent;            /* gennemsigtig baggrund */
   color: rgb(210, 180, 140);          /* din oprindelige pile-farve */
-  border: 2px solid red !important;
+  border: none;
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
   z-index: 100;
-  display: block; !important;                      /* stadig skjult på forsiden */
+  display: none;                      
 }
 
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/nosleep.js@0.12.0/dist/NoSleep.min.js"></script>
 </head>
 <body>
   <audio id="bg-music" src="Phill Collins - You'll Be In My Heart (Tarzan).mp3" loop preload="auto"></audio>
@@ -127,6 +128,7 @@
 
  <script>
 (() => {
+  const noSleep = new NoSleep();
   const slides    = Array.from(document.querySelectorAll('.slide'));
   const leftBtn   = document.querySelector('.arrow.left');
   const rightBtn  = document.querySelector('.arrow.right');
@@ -197,7 +199,7 @@
         setTimeout(() => {
           showSlide(0);
           bgMusic.pause();
-          bgMusic.Volume = 1;
+          bgMusic.volume = 1;
         }, 5000);
         return;
       }
@@ -213,6 +215,7 @@
     toggleBtn.setAttribute('aria-label', 'Pause');
     bgMusic.play().catch(() => {});
     requestWakeLock();
+    noSleep.enable();
     scheduleNext();
   }
 
@@ -224,6 +227,7 @@
     toggleBtn.setAttribute('aria-label', 'Start');
     fadeOutMusic(2000);
     releaseWakeLock();
+    noSleep.disable();
   }
   
   // Event-listeners
