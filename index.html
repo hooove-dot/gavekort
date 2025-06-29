@@ -29,7 +29,7 @@
       width:100vw; height:90vh;
       object-fit:contain;
       object-position:50% 20% !important;
-      background-color: #faf0e6;
+      background-color: #faf0e6; !important;
       opacity:0;
       transition:opacity 1s ease;
     }
@@ -39,6 +39,9 @@
     }
     .slide.special {
       object-position:50% 40% !important;
+    }
+    .slide.center-it {
+      object-position:50% 50% !important;
     }
 
     /* —– Pile —– */
@@ -96,7 +99,7 @@
   <audio id="bg-music" src="Phill Collins - You'll Be In My Heart (Tarzan).mp3" loop preload="auto"></audio>
   <div class="slider">
     <img src="forside.png"   class="slide active special" alt="forside">
-    <img src="FørsteLeo.png"  class="slide"       alt="">
+    <img src="FørsteLeo.png"  class="slide center-it"       alt="">
     <img src="billede1.png"  class="slide special"       alt="">
     <img src="Billede 2.jpg" class="slide"               alt="">
     <img src="billede3.jpg"  class="slide special"       alt="">
@@ -112,14 +115,14 @@
     <img src="billede13.png"  class="slide"              alt="">
     <img src="billede14.jpeg" class="slide"              alt="">
     <img src="billede15.jpg"  class="slide"              alt="">
-    <img src="SidstesideLeo.png"  class="slide"       alt="">
+    <img src="SidstesideLeo.png"  class="slide center-it"       alt="">
     <img src="billede16.png"  class="slide"              alt="">
 
     
     <button class="arrow left">&#8249;</button>
     <button class="arrow right">&#8250;</button>
     <div class="start-text">Start</div>
-    <button id="togglePlay" class="toggle" aria-label="Pause">❚❚</button>
+    <button id="toggleBtnPlay" class="toggle" aria-label="Pause">❚❚</button>
   </div>
 
  <script>
@@ -128,7 +131,7 @@
   const leftBtn   = document.querySelector('.arrow.left');
   const rightBtn  = document.querySelector('.arrow.right');
   const startText = document.querySelector('.start-text');
-  const toggleBtn = document.getElementById('togglePlay');
+  const toggleBtn = document.getElementById('toggleBtnPlay');
   const bgMusic   = document.getElementById('bg-music');
 
   let idx = 0, lastSlideTimer, nextTimer, isPlaying = false;
@@ -187,6 +190,11 @@
   function scheduleNext() {
     clearTimeout(nextTimer);
     nextTimer = setTimeout(() => {
+      if (idx === slides.length - 1) {
+        // fade ud på sidste slide - ingen loop
+        fadeOutMusic(2000);
+        return;
+      }
       showSlide(idx + 1);
       scheduleNext();
     }, durations[idx]);
