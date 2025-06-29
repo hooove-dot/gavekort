@@ -9,7 +9,7 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     html, body {
       width:100%; height:100%;
-      background:#000;
+      background:#8b4513;
       font-family:Georgia, serif;
       overflow:hidden;
     }
@@ -28,7 +28,7 @@
       width:100vw; height:90vh;
       object-fit:contain;
       object-position:50% 20% !important;
-      background-color:#000;
+      background-color:#8b4513;
       opacity:0;
       transition:opacity 1s ease;
     }
@@ -123,7 +123,6 @@
 
  <script>
 (() => {
-  let firstShow = true;
   const slides    = Array.from(document.querySelectorAll('.slide'));
   const leftBtn   = document.querySelector('.arrow.left');
   const rightBtn  = document.querySelector('.arrow.right');
@@ -131,37 +130,44 @@
   const toggleBtn = document.getElementById('togglePlay');
   const bgMusic   = document.getElementById('bg-music');
 
-  let idx = 0;
-  let lastSlideTimer;
-  let nextTimer;
-  let isPlaying = false;
+  let idx = 0, lastSlideTimer, nextTimer, isPlaying = false;
+  let wakeLock = null;
 
   // Wake Lock API
-  let wakeLock = null;
   async function requestWakeLock() {
-    try {
-      wakeLock = await navigator.wakeLock.request('screen');
-    } catch (err) {
-      console.warn('Wake lock ikke tilgængelig:', err);
-    }
+    try { wakeLock = await navigator.wakeLock.request('screen'); } 
+    catch (err) { console.warn('Wake lock ikke tilgængelig:', err); }
   }
   async function releaseWakeLock() {
-    if (wakeLock) {
-      await wakeLock.release();
-      wakeLock = null;
-    }
+    if (wakeLock) { await wakeLock.release(); wakeLock = null; }
   }
-
+  
+ // Fade-out funktion
+  function fadeOutMusic(duration = 2000) {
+    const steps    = 20;
+    const stepTime = duration / steps;
+    const volStep  = bgMusic.volume / steps;
+    let current    = 0;
+    const iv = setInterval(() => {
+      current++;
+      bgMusic.volume = Math.max(0, bgMusic.volume - volStep);
+      if (current >= steps) {
+        clearInterval(iv);
+        bgMusic.pause();
+        bgMusic.volume = 1;
+      }
+    }, stepTime);
+  }
+  
   // Dynamiske varigheder pr. slide
   const durations = slides.map((_, i) => {
-    // slide #1 = FørsteLeo (i=1) og næstsidste slide vises i 8s
-    return (i === 1 || i === slides.length - 2) ? 8000 : 5000;
+    if (i === 1)                  return 8000;   // FørsteLeo
+    if (i === slides.length - 2)  return 12000;  // næstsidste slide
+    return 5000;
   });
 
   function showSlide(i) {
-    // Skjul gammel
     slides[idx].classList.remove('active');
-    // Beregn ny index
     idx = (i + slides.length) % slides.length;
     slides[idx].classList.add('active');
 
@@ -169,22 +175,14 @@
     startText.style.display = onFront ? 'block' : 'none';
     leftBtn.style.display   = onFront ? 'none'  : 'block';
     rightBtn.style.display  = onFront ? 'none'  : 'block';
+    toggleBtn.style.display = onFront ? 'none' : 'block';
 
-    // Skjul toggle kun første gang på forside
-    if (firstShow && onFront) {
-      toggleBtn.style.display = 'none';
-      firstShow = false;
-    } else {
-      toggleBtn.style.display = 'block';
-    }
-
-    // Pause musikken for end-siden efter 3s
-    clearTimeout(lastSlideTimer);
+  clearTimeout(lastSlideTimer);
     if (idx === slides.length - 1) {
-      lastSlideTimer = setTimeout(() => bgMusic.pause(), 3000);
+      lastSlideTimer = setTimeout(() => fadeOutMusic(2000), durations[idx]);
     }
   }
-
+  
   function scheduleNext() {
     clearTimeout(nextTimer);
     nextTimer = setTimeout(() => {
@@ -209,7 +207,7 @@
     clearTimeout(nextTimer);
     toggleBtn.textContent       = '►';
     toggleBtn.setAttribute('aria-label', 'Start');
-    bgMusic.pause();
+    fadeOutMusic(2000);
     releaseWakeLock();
   }
 
