@@ -85,12 +85,12 @@
   padding: 0.5rem 0.75rem;
   background: transparent;            /* gennemsigtig baggrund */
   color: rgb(210, 180, 140);          /* din oprindelige pile-farve */
-  border: none;
+  border: 2px solid red !important;
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
   z-index: 100;
-  display: none;                      /* stadig skjult på forsiden */
+  display: block; !important;                      /* stadig skjult på forsiden */
 }
 
   </style>
@@ -180,6 +180,7 @@
     leftBtn.style.display   = onFront ? 'none'  : 'block';
     rightBtn.style.display  = onFront ? 'none'  : 'block';
     toggleBtn.style.display = onFront ? 'none' : 'block';
+    console.log('slide', idx, 'toggle display =', toggleBtn.style.display);
 
     clearTimeout(lastSlideTimer);
     if (idx === slides.length - 1) {
@@ -193,6 +194,11 @@
       if (idx === slides.length - 1) {
         // fade ud på sidste slide - ingen loop
         fadeOutMusic(2000);
+        setTimeout(() => {
+          showSlide(0);
+          bgMusic.pause();
+          bgMusic.Volume = 1;
+        }, 5000);
         return;
       }
       showSlide(idx + 1);
