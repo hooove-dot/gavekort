@@ -9,13 +9,14 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     html, body {
       width:100%; height:100%;
-      background:#faf0e6
+      background: #faf0e6;
       font-family:Georgia, serif;
       overflow:hidden;
     }
 
     /* —– Slider container —– */
     .slider {
+      background: #faf0e6;
       position:relative;
       width:100vw; height:100vh;
       overflow:hidden;
@@ -28,7 +29,7 @@
       width:100vw; height:90vh;
       object-fit:contain;
       object-position:50% 20% !important;
-      background-color:#faf0e6
+      background-color: #faf0e6;
       opacity:0;
       transition:opacity 1s ease;
     }
@@ -149,21 +150,21 @@
     const volStep  = bgMusic.volume / steps;
     let current    = 0;
     const iv = setInterval(() => {
-      current++;
-      bgMusic.volume = Math.max(0, bgMusic.volume - volStep);
-      if (current >= steps) {
+      if (++current >= steps) {
         clearInterval(iv);
         bgMusic.pause();
         bgMusic.volume = 1;
-      }
+      } else {  
+        bgMusic.volume = Math.max(0, bgMusic.volume - volStep);
+      }  
     }, stepTime);
   }
   
   // Dynamiske varigheder pr. slide
   const durations = slides.map((_, i) => {
-    if (i === 1)                  return 8000;   // FørsteLeo
-    if (i === slides.length - 2)  return 12000;  // næstsidste slide
-    return 5000;
+    if (i === 1)                       return 8000;   // FørsteLeo
+    else if (i === slides.length - 2)  return 12000;  // næstsidste slide
+    else                               return 5000;
   });
 
   function showSlide(i) {
@@ -177,7 +178,7 @@
     rightBtn.style.display  = onFront ? 'none'  : 'block';
     toggleBtn.style.display = onFront ? 'none' : 'block';
 
-  clearTimeout(lastSlideTimer);
+    clearTimeout(lastSlideTimer);
     if (idx === slides.length - 1) {
       lastSlideTimer = setTimeout(() => fadeOutMusic(2000), durations[idx]);
     }
@@ -210,7 +211,7 @@
     fadeOutMusic(2000);
     releaseWakeLock();
   }
-
+  
   // Event-listeners
   startText.addEventListener('click', () => {
     showSlide(1);
@@ -218,10 +219,21 @@
   });
   leftBtn.addEventListener('click',  () => { stopAuto(); showSlide(idx - 1); });
   rightBtn.addEventListener('click', () => { stopAuto(); showSlide(idx + 1); });
-  toggleBtn.addEventListener('click', () => {
-    isPlaying ? stopAuto() : startAuto();
-  });
-
+  toggleBtn.addEventListener('click', () => 
+    isPlaying ? stopAuto() : startAuto()
+  );
+// Når bruger skifter væk fra siden, stop alt
+ document.addEventListener('visibilitychange', () => {
+   if (document.hidden) {
+     stopAuto();
+     bgMusic.pause();
+    }
+ });
+ window.addEventListener('pagehide', () => {
+   stopAuto();
+   bgMusic.pause();
+});
+  
   // Init
   showSlide(0);
   window.addEventListener('beforeunload', () => bgMusic.pause());
